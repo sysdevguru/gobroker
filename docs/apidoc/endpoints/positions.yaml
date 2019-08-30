@@ -1,0 +1,44 @@
+positions:
+  get:
+    tags:
+      - positions
+    summary: Get open positions
+    description: |
+      Retrieves a list of the account's open positions.
+    operationId: getPositions
+    responses:
+      '200':
+        description: successful operation
+        schema:
+          type: array
+          items:
+            $ref: '/entities/position.yaml#/Position'
+      '401':
+        $ref: /entities/global.yaml#/errors/Unauthorized
+    security:
+      APIKey: []
+position:
+  get:
+    tags:
+      - positions
+    summary: Get an open position
+    description: |
+      Retrieves the account's open position for the given `symbol`.
+    operationId: getPositions
+    parameters:
+      - in: path
+        name: symbol
+        description: symbol or asset_id
+        type: string
+        format: uuid
+    responses:
+      '200':
+        description: successful operation
+        schema:
+          $ref: '/entities/position.yaml#/Position'
+      '401':
+        $ref: /entities/global.yaml#/errors/Unauthorized
+      '404':
+        $ref: /entities/global.yaml#/errors/NotFound
+    security:
+      APIKey: []

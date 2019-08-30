@@ -1,0 +1,14 @@
+/bin/
+/pkg/
+/data/
+**/*.swp
+/.vscode/
+
+# Docker Dev Env
+compose/cachedata
+compose/logs
+compose/postgres/pgdata
+compose/prjdata
+compose/rmqdata
+compose/marketstore/mktsdb
+.idea/

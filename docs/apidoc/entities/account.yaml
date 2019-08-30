@@ -1,0 +1,58 @@
+Status:
+  description: account status
+  type: string
+  enum:
+    - ONBOARDING
+    - SUBMISSION_FAILED
+    - SUBMITTED
+    - ACCOUNT_UPDATED
+    - APPROVAL_PENDING
+    - ACTIVE
+    - REJECTED
+Account:
+  type: object
+  properties:
+    id:
+      description: account id
+      example: 904837e3-3b76-47ec-b432-046db621571b
+      allOf:
+        - $ref: 'global.yaml#/Id'
+      required: true
+    status:
+      $ref: '#/Status'
+      example: "ACTIVE"
+    currency:
+      type: string
+      enum:
+        - USD
+    cash:
+      type: string
+      description: tradable cash amount
+      example: "4000.32"
+    cash_withdrawable:
+      type: string
+      description: withdrawable cash amount
+      example: "4000.32"
+    portfolio_value:
+      type: string
+      description: total value of cash + holding positions
+      example: "4321.98"
+    pattern_day_trader:
+      type: boolean
+      description: Whether or not the account has been flagged as a pattern day trader
+      example: false
+    trading_blocked:
+      type: boolean
+      description: If true, the account is not allowed to place orders
+      example: false
+    risky_transfers:
+      type: boolean
+      description: If true, the account needs OUTGOING transfers to be reviewed and approved by an admin
+      example: false
+    account_blocked:
+      type: boolean
+      description: If true, the account activity by user is prohibited
+      example: false
+    created_at:
+      type: string
+      format: date-time

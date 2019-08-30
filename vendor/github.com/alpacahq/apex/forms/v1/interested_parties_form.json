@@ -1,0 +1,136 @@
+{
+  "document": "# Interested party information\n\n* interested party\nname: `interestedParties.name.givenName` `interestedParties.name.middleInitial` `interestedParties.name.familyName`\n      OR\n      `interestedParties.name.companyName`\nadditional name: `interestedParties.additionalName`\naddress:\n  `interestedParties.mailingAddress.streetAddress`\n  `interestedParties.mailingAddress.city`\n  `interestedParties.mailingAddress.state`\n  `interestedParties.mailingAddress.postalCode`\n  `interestedParties.mailingAddress.country`",
+  "additionalProperties": false,
+  "title": "interested_party_request_form",
+  "type": "object",
+  "version": 1,
+  "required": [
+    "interestedParties"
+  ],
+  "properties": {
+    "interestedParties": {
+      "maxItems": 7,
+      "description": "Array of interested parties.\n",
+      "type": "array",
+      "items": {
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "mailingAddress"
+        ],
+        "properties": {
+          "mailingAddress": {
+            "description": "A physical address. May be a PO Box, Rural Route address, etc. City, state, and postalCode should be provided when possible, and are required when country is USA. For international addresses where they just don't make sense, they can be omitted.",
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "streetAddress",
+              "city",
+              "country"
+            ],
+            "properties": {
+              "country": {
+                "format": "country-alpha-3",
+                "type": "string",
+                "example": "USA"
+              },
+              "streetAddress": {
+                "minItems": 1,
+                "maxItems": 3,
+                "description": "At most, 3 lines of streetAddress are available. For the custodian (2nd applicant) of\na CUSTODIAN account, only 2 lines are available.\n",
+                "type": "array",
+                "items": {
+                  "format": "ascii_printable",
+                  "type": "string",
+                  "maxLength": 30
+                },
+                "example": [
+                  "107 SE Washington St, Ste 256"
+                ]
+              },
+              "city": {
+                "format": "ascii_printable",
+                "type": "string",
+                "example": "Portland"
+              },
+              "postalCode": {
+                "format": "ascii_printable",
+                "description": "required for domestic and resident alien persons (domestic - person citizenshipCountry = USA and RA\n - citizenshipCountry != USA and addressCountry = USA)\n",
+                "type": "string",
+                "example": "97214"
+              },
+              "state": {
+                "format": "ascii_printable",
+                "description": "required for domestic and resident alien persons (domestic - person citizenshipCountry = USA and RA\n- citizenshipCountry != USA and addressCountry = USA)\n",
+                "type": "string",
+                "example": "OR"
+              }
+            }
+          },
+          "name": {
+            "oneOf": [
+              {
+                "description": "The combined length of givenName, middleInitial and familyName, including interpolated\nspaces, can be no longer than 30 characters. The system will automatically drop the\nmiddleInitial, and truncate givenName, as needed to construct the name for addressing\npurposes.\n",
+                "additionalProperties": false,
+                "title": "interested_party_person_name",
+                "type": "object",
+                "version": 1,
+                "required": [
+                  "givenName",
+                  "familyName"
+                ],
+                "properties": {
+                  "middleInitial": {
+                    "minLength": 1,
+                    "format": "ascii_printable",
+                    "type": "string",
+                    "maxLength": 1,
+                    "example": "D"
+                  },
+                  "givenName": {
+                    "minLength": 1,
+                    "format": "ascii_printable",
+                    "type": "string",
+                    "maxLength": 20,
+                    "example": "Intereste"
+                  },
+                  "familyName": {
+                    "minLength": 1,
+                    "format": "ascii_printable",
+                    "type": "string",
+                    "maxLength": 20,
+                    "example": "Party"
+                  }
+                }
+              },
+              {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "companyName"
+                ],
+                "properties": {
+                  "companyName": {
+                    "minLength": 1,
+                    "format": "ascii_printable",
+                    "type": "string",
+                    "maxLength": 20,
+                    "example": "Elizabeth"
+                  }
+                }
+              }
+            ]
+          },
+          "additionalName": {
+            "format": "ascii-printable",
+            "description": "An additional free-form line which will appear in addresses as the second line,\nafter the name of the interested party\n",
+            "type": "string",
+            "maxLength": 30,
+            "example": "Attn: Joe in Compliance"
+          }
+        }
+      }
+    }
+  }
+}

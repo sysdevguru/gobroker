@@ -1,0 +1,181 @@
+version: "3.4"
+services:
+  databasesvc:
+    image: gcr.io/alpacahq/gbi.postgresql
+    build:
+      context: compose/postgres
+      dockerfile: Dockerfile
+    env_file:
+      - compose/env.core
+      - compose/env.postgres
+      - compose/enc.gobroker
+    user: 'postgres'
+    volumes:
+      - pgentryvol:/docker-entrypoint-initdb.d
+      - pgdatavol:/var/lib/postgresql/data
+      - projectvol:/project
+
+  flagentsvc:
+    image: gcr.io/alpacahq/flagent
+    build:
+      context: compose/flagent
+      dockerfile: Dockerfile
+    volumes:
+      - flagentvol:/var/log/fluentd
+    command: run
+
+  rmqsvc:
+    image: rabbitmq:3.7.4-management-alpine
+    volumes:
+      - rmqdatavol:/var/lib/rabbitmq/mnesia
+    env_file:
+      - compose/env.core
+      - compose/env.rmq
+
+  redissvc:
+    image: redis:alpine3.8
+
+  polycachesvc:
+    image: alpacamarkets/polycache:v1.2.3
+    volumes:
+      - projectvol:/project
+      - polyvol:/data
+    environment:
+      TEST_MODE: "TRUE"
+      RAFT_DIR: /data/poly
+    env_file:
+      - compose/env.core
+
+  marketstoresvc:
+    image: alpacamarkets/marketstore:v3.0.1
+    volumes:
+      - mktsvol:/data
+    env_file:
+      - compose/env.core
+    entrypoint:
+      - 'marketstore'
+      - 'start'
+      - '-c'
+      - '/data/mkts.yml'
+
+  gtsetup:
+    image: alpacamarkets/gotrader:v1.7.3
+    depends_on: 
+      - databasesvc
+      - rmqsvc
+    volumes:
+      - cachevol:/go/pkg
+    environment:
+      PGHOST: databasesvc
+      SIMULATOR_DB: gotrader_sim
+    entrypoint:
+      - 'migrate'
+
+  gotradersvc:
+    image: alpacamarkets/gotrader:v1.7.3
+    depends_on: 
+      - databasesvc
+      - rmqsvc
+      - gtsetup
+    volumes:
+      - projectvol:/project
+    env_file:
+      - compose/env.core
+      - compose/env.gotrader
+    restart: on-failure
+
+  gbsetup:
+    image: gcr.io/alpacahq/gobroker:latest
+    depends_on: 
+      - databasesvc
+    volumes:
+      - cachevol:/go/pkg
+    environment:
+      PGHOST: databasesvc
+    entrypoint:
+      - migrate
+
+  gobrokersvc:
+    image: gcr.io/alpacahq/gobroker:latest
+    depends_on: 
+      - databasesvc
+      - rmqsvc
+      - redissvc
+      - polycachesvc
+      - flagentsvc
+      - gbsetup
+    volumes:
+      - projectvol:/project
+    env_file:
+      - compose/env.core
+      - compose/env.gobroker
+
+  gb-workerssvc:
+    image: gcr.io/alpacahq/gobroker:latest
+    depends_on: 
+      - databasesvc
+      - rmqsvc
+      - gbsetup
+    volumes:
+      - projectvol:/project
+      - cachevol:/go/pkg
+    env_file:
+      - compose/env.core
+      - compose/env.gbworkers
+    entrypoint: workers
+  
+  ptsetup:
+    image: alpacamarkets/papertrader:v1.1.8
+    depends_on: 
+      - databasesvc
+    volumes:
+      - cachevol:/go/pkg
+    environment:
+      PGHOST: databasesvc
+    entrypoint:
+      - migrate
+
+  papertradersvc:
+    image: alpacamarkets/papertrader:v1.1.8
+    depends_on: 
+      - databasesvc
+      - rmqsvc
+      - gbsetup
+      - flagentsvc
+    volumes:
+      - projectvol:/project
+      - cachevol:/go/pkg
+    env_file:
+      - compose/env.core
+      - compose/env.papertrader
+
+  nginxsvc:
+    image: gcr.io/alpacahq/nginx
+    depends_on:
+      - gobrokersvc
+    build:
+      context: compose/nginx
+      dockerfile: Dockerfile
+
+volumes:
+  pgentryvol:
+    external: true
+  pgdatavol:
+    external: true
+  rmqdatavol:
+    external: true
+  mktsvol:
+    external: true
+  cachevol:
+    external: true
+  polyvol:
+    external: true
+  flagentvol:
+    external: true
+  projectvol:
+    external: true
+
+networks:
+  default:
+    external:
+      name: cloudbuild

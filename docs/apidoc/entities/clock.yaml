@@ -1,0 +1,21 @@
+Clock:
+  type: object
+  properties:
+    timestamp:
+      description: current timestamp
+      type: string
+      format: date-time
+      example: 2018-04-01T12:00:00.000000Z
+    is_open:
+      description: market open flag
+      type: boolean
+    next_open:
+      description: next market open timestamp
+      type: string
+      format: date-time
+      example: 2018-04-01T12:00:00.000000Z
+    next_close:
+      description: next market close timestamp
+      type: string
+      format: date-time
+      example: 2018-04-01T12:00:00.000000Z

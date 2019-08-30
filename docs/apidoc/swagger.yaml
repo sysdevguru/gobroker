@@ -1,0 +1,494 @@
+swagger: '2.0'
+schemes:
+  - http
+  - https
+host: docs.alpaca.markets
+basePath: /v1
+info:
+  description: |
+
+    # Introduction
+    Alpaca is a modern platform for algorithmic trading.  Alpaca's
+    API is the interface for your trading algo to communicate with Alpaca's brokerage
+    service.
+
+    The API allows your trading algo to access real-time price, fundamentals,
+    place orders and manage your portfolio, in either REST (pull) or streaming
+    (push) style.
+
+    In order to start trading with Alpaca API, please sign up
+    [here](https://alpaca.markets/).
+
+    Once you have signed up and have familiarized yourself with our API, please
+    check out our [python client](https://github.com/alpacahq/alpaca-trade-api-python)
+    to begin writing your own algo!
+
+    # Authentication
+    Every private API call requires key-based authentication. API keys can
+    be acquired in the developer web console.  The client must provide a pair of API
+    key ID and secret key in the HTTP request headers named
+    `APCA-API-KEY-ID` and `APCA-API-SECRET-KEY` respectively.
+
+    Here is an example using curl showing how to authenticate with the API.
+
+    ```
+    curl -X GET \
+      -H "APCA-API-KEY-ID: {YOUR_API_KEY_ID}" \
+      -H "APCA-API-SECRET-KEY: {YOUR_API_SECRET_KEY}"\
+      https://{apiserver_domain}/v1/accounts
+    ```
+
+    Alpaca's live API domain is `api.alpaca.markets`.
+
+    # Paper Trading
+    Alpaca's paper trading service uses a different domain and different credentials from
+    the live api. You'll need to connect to the right domain so that you don't
+    run your paper trading algo on your live account.
+
+    To use the paper trading api, set `APCA-API-KEY-ID` and
+    `APCA-API-SECRET-KEY` to your paper credentials, and set the domain to `https://paper-api.alpaca.markets`.
+
+    After you have tested your algo on paper and are ready to start running your algo
+    for real, you can switch the domain to the live domain, and the credentials to your
+    live credentials. Your algo will then start trading with real money.
+
+    To learn more about paper trading, visit the [paper trading support page](https://support.alpaca.markets/hc/en-us/articles/360014089632-Paper-Trading).
+
+    # Rate Limit
+    There is a rate limit for the API requests.  When it is exceeded, the API
+    server returns error response with HTTP status code 429.  The rate limit is
+    200 requests per every minute per API key.
+
+    # General Rules
+    ## Time Format and Time Zone
+    All date time type inputs and outputs are serialized according to
+    [ISO8601](https://www.iso.org/iso-8601-date-and-time-format.html)
+    (more specifically [RFC3339](https://tools.ietf.org/html/rfc3339)).  The
+    communication does not assume a particular time zone, and this date time
+    serialization denominates the time offset of each value.
+
+    ## Numbers
+    Decimal numbers are returned as strings to preserve full precision across
+    platforms. When making a request, it is recommended that you also convert
+    your numbers to strings to avoid truncation and precision errors.
+
+    ## IDs
+    Object ID in Alpaca system uses UUID v4.  When making requests, the format
+    with dashes is accepted.
+
+    ```
+    904837e3-3b76-47ec-b432-046db621571b
+    ```
+
+    ## Assets and Symbology
+    An asset in this API is a tradable or non-tradable financial instrument.
+    Alpaca maintains our own asset database and assigns an internal
+    ID for each asset which you can use to identify assets to specify in API
+    calls.  Assets are also identified by a combination of symbol, exchange,
+    and asset class.  The symbol of an asset may change over the time, but
+    the symbol for an asset is always the one at the time API call is made.
+
+    When the API accepts a parameter named `symbol`, you can use one of the
+    following four different forms unless noted otherwise.
+
+        - "{symbol}"
+        - "{symbol}:{exchange}"
+        - "{symbol}:{exchange}:{asset_class}"
+        - "{asset_id}"
+
+    Typically the first form is enough, but in the case multiple assets are
+    found with a symbol (the same symbol may be used in different exchanges or
+    asset classes), the most commonly-used asset is assumed. To avoid
+    the ambiguity, you can use the second or third form with suffixes joined
+    by colons (:)   Alternatively, `asset_id` is guaranteed as unique, in the
+    form of UUID v4. When the API accepts `symbols` to specify more than one
+    symbol in one API call, the general rule is to to use commas (,) to separate
+    them.
+
+    All of four symbol forms are case-sensitve.
+
+    ## Scheduled Downtime
+    For scheduled downtime, please visit our [FAQ](https://support.alpaca.markets/hc/en-us/articles/360014277951-Scheduled-Downtime).
+
+  version: 0.9.2
+  title: Alpaca Trading API
+  termsOfService: 'https://files.alpaca.markets/disclosures/alpaca_terms_and_conditions.pdf'
+  x-logo:
+    url: '/images/logo.png'
+x-tagGroups:
+  - name: General
+    tags:
+      - account
+      - orders
+      - positions
+      - assets
+      - clock
+      - calendar
+  - name: Market Data
+    tags:
+      - polygon
+  - name: Streaming
+    tags:
+      - streaming-overview
+      - streaming-auth
+      - streaming-listening
+      - streaming-account
+  - name: Change Log
+    tags:
+      - change-history
+tags:
+  - name: account
+    description: |
+      The accounts API serves important account related information for a given API key, including account status, funds
+      available for trade, funds available for withdrawal, and various flags relevant to an account's ability to trade.
+      An account maybe be blocked for just for trades (`trades_blocked` flag) or for both trades and transfers
+      (`account_blocked` flag) if Alpaca identifies the account to engaging in any suspicious activity. Also, in accordance
+      with FINRA's [pattern day trading rule](http://www.finra.org/investors/day-trading-margin-requirements-know-rules),
+      an account may be flagged for pattern day trading (`pattern_day_trader` flag), which would inhibit an account
+      from placing any further day-trades.
+  - name: orders
+    description: |
+      The orders API allows a user to monitor, place and cancel their orders with Alpaca. Each order has a unique identifer
+      provided by the client. This client-side unique order ID will be automatically generated by the system if not provided
+      by the client, and will be returned as part of the order object along with the rest of the fields described below. Once an
+      order is placed, it can be queried using the client-side order ID to check the status. Updates on open orders at Alpaca
+      will also be sent over the [streaming interface](/#tag/streaming), which is the recommended method of maintaining order state.
+      
+      An order executed through Alpaca can experience several status changes during its lifecycle. These most common statuses are 
+      described in detail below:
+
+     
+      
+      - `new`
+        - The order has been received by Alpaca, and routed to exchanges for execution. This is the usual initial state of an order.
+      - `partially_filled`
+        - The order has been partially filled.
+      - `filled`
+        - The order has been filled, and no further updates will occur for the order.
+      - `done_for_day`
+        - The order is done executing for the day, and will not receive further updates until the next trading day.
+      - `canceled`
+        - The order has been canceled, and no further updates will occur for the order. This can be either due to a cancel request
+        by the user, or the order has been canceled by the exchanges due to its time-in-force.
+      - `expired`
+        - The order has expired, and no further updates will occur for the order.
+
+      Less common states are described below. Note that these states only occur on very rare occasions, and most users will likely
+      never see their orders reach these states:
+
+      - `accepted`
+        - The order has been received by Alpaca, but hasn't yet been routed to exchanges. This state only occurs on rare occasions.
+      - `pending_new`
+        - The order has been received by Alpaca, and routed to the exchanges, but has not yet been accepted for execution. This state 
+        only occurs on rare occasions.
+      - `accepted_for_bidding`
+        - The order has been received by exchanges, and is evaluated for pricing. This state only occurs on rare occasions.
+      - `pending_cancel`
+        - The order is waiting to be canceled. This state only occurs on rare occasions.
+      - `stopped`
+        - The order has been stopped, and a trade is guaranteed for the order, usually at a stated price or better, but has not
+        yet occurred. This state only occurs on rare occasions.
+      - `rejected`
+        - The order has been rejected, and no further updates will occur for the order. This state occurs on rare occasions, and may
+        occur based on various conditions decided by the exchanges.
+      - `suspended`
+        - The order has been suspended, and is not eligible for trading. This state only occurs on rare occasions.
+      - `calculated`
+        - The order has been completed for the day (either filled or done for day), but remaining settlement calcuations are still 
+        pending. This state only occurs on rare occasions.
+
+      An order may be canceled through the API up until the point it reaches a state of either `filled`, `canceled`, or `expired`.
+  - name: positions
+    description: |
+      The positions API provides information about an account's current open positions. The response will include information
+      such as cost basis, shares traded, and market value, which will be updated live as price information is updated. Once a
+      position is closed, it will no longer be queryable through this API.
+  - name: assets
+    description: |
+      The assets API serves as the master list of assets available for trade and data consumption from Alpaca. Assets
+      are sorted by asset class, exchange and symbol. Some assets are only available for data consumption via Polygon,
+      and are not tradable with Alpaca. These assets will be marked with the flag `tradable=false`.
+  - name: polygon
+    x-displayName: polygon integration
+    description: |
+      Customers with Alpaca can access various kinds of data in [Polygon](https://polygon.io/) using the Alpaca Trade API key ID
+      (but the key secret is not required).  For the RESTful interface, you need to give the `apiKey` parameter with the same API
+      key ID, as demonstrated below.
+
+      ```
+      $ curl "https://api.polygon.io/v1/historic/quotes/SPY/2018-06-01?apiKey=$APCA_API_KEY_ID"
+      ```
+
+      You can query quotes, bars, and fundamentals data for both historical and realtime.
+
+      With the same API key ID, you can subscribe your algorithm to the NATS streaming for market data updates.
+      In order for your program to be authenticated with the key ID, use the `CONNECT` method with the `auth_token` field.
+
+      ```
+      [CONNECT {"auth_token":"<your-key-id>"}]\r\n
+      ```
+
+      For the further description and specification of each API endpoint, please find more details [here](https://polygon.io/docs/).
+      The details about NATS protocol can be found [here](https://nats.io/documentation/internals/nats-protocol/). Also, please
+      refer to the documentation provided by each language SDK for its I/O specification.
+  - name: clock
+    description: |
+      The clock API serves the current market timestamp, whether or not the market is currently open, as well as the
+      times of the next market open and close.
+  - name: calendar
+    description: |
+      The calendar API serves the full list of market days from 1970 to 2029. It can also be queried by specifying a
+      start and/or end time to narrow down the results. In addition to the dates, the response also contains the
+      specific open and close times for the market days, taking into account early closures.
+  - name: streaming-overview
+    x-displayName: overview
+    description: |
+      Alpaca's API offers WebSocket streaming for account and order updates which follows the [RFC6455 WebSocket protocol](https://tools.ietf.org/html/rfc6455).
+
+      To connect to the WebSocket follow the standard opening handshake as defined by the RFC specification to the `/stream`
+      endpoint of Alpaca's API. Alpaca's streaming service supports both JSON and MessagePack codecs.
+
+  - name: streaming-auth
+    x-displayName: authentication
+    description: |
+      The WebSocket client can be authenticated using the same API key when making HTTP requests. Upon connecting to the WebSocket
+      client must send an authentication message over the WebSocket connection with the API key, and secret key as its payload:
+      ```
+      {
+        "action": "authenticate",
+        "data": {
+          "key_id": "{YOUR_API_KEY_ID}",
+          "secret_key": "{YOUR_API_SECRET_KEY}"
+        }
+      }
+      ```
+      The server will then authorize the connection and respond with either a successful response:
+      ```
+      {
+        "stream": "authorization",
+        "data": {
+          "status": "authorized",
+          "action": "authenticate"
+        }
+      }
+      ```
+      or an unathorized response:
+      ```
+      {
+        "stream": "authentication",
+        "data": {
+          "status": "unauthorized",
+          "action": "authenticate"
+        }
+      }
+      ```
+      Once successfully authenticated, the client may listen to trade and price streams.
+
+  - name: streaming-listening
+    x-displayName: listen
+    description: |
+      Once the connection is authorized, the client can listen to one or more streams
+      to get updates on particular changes.  These are the streams the client can
+      choose to listen to.
+
+      - account_updates
+      - trade_updates
+
+      The details of each stream will be described later in this document.
+
+      In order to listen to streams, the client sends a `listen` message
+      to the server as follows.
+      ```
+      {
+        "action": "listen",
+        "data": {
+          "streams": ["trade_updates"]
+        }
+      }
+      ```
+      The server acknowledges by replying a message in the `listening`
+      stream.
+      ```
+      {
+        "stream": "listening",
+        "data": {
+          "streams": ["trade_updates"]
+        }
+      }
+      ```
+      If some of the requested streams are not available, they will not appear
+      in the `streams` list in the acknowledgement.
+      Note that the `streams` field in the listen message is to tell
+      the set of streams to listen, so if you want to stop receiving
+      updates from the stream, you must send an empty list of streams
+      values as a listen message.  Similarly, if you want to add more
+      streams to get updates in in addition to the ones you are already
+      doing so, you must send all the stream names not only the new
+      ones.
+
+      In the case the socket connection is not authorized yet, a new message under
+      the `authorization` stream is issued in response to the listen request.
+      ```
+      {
+        "stream": "authorization",
+        "data": {
+            "status": "unauthorized",
+            "action": "listen"
+        }
+      }
+      ```
+
+  - name: streaming-account
+    x-displayName: trades and orders
+    description: |
+      In order to maintain the state of their brokerage accounts at Alpaca, along with requesting from the REST API, clients can also
+      listen to the trade streams for their accounts. This will ensure any running algorithms will always have the most up-to-date
+      picture of any accounts they are trading with at Alpaca.
+
+      ## Order Updates
+      Updates with regards to orders placed at Alpaca are dispatched over the WebSocket connection under the event `trade_updates`, and include
+      any data pertaining to orders that are executed with Alpaca. This includes order fills, partial fills, as well as cancellations and
+      rejections of orders. Clients may listen to this stream by sending a listen message:
+      ```
+      {
+        "action": "listen",
+        "data": {
+          "streams": ["trade_updates"]
+        }
+      }
+      ```
+      Any listen messages received by the server will be ackwnowledged via a message on the `listening` stream. The message's
+      data payload will include the list of streams the client is currently listening to:
+      ```
+      {
+        "stream": "listening",
+        "data": {
+          "streams": ["trade_updates"]
+        }
+      }
+      ```
+
+      An example message sent over the `trade_updates` stream would look like:
+      ```
+      {
+        "stream": "trade_updates",
+        "data": {
+          "event": "fill",
+          "qty": "100",
+          "price": "179.08",
+          "timestamp": "2018-02-28T20:38:22Z"
+          "order": {
+            "id": "7b7653c4-7468-494a-aeb3-d5f255789473",
+            "client_order_id": "7b7653c4-7468-494a-aeb3-d5f255789473",
+            "asset_id": "904837e3-3b76-47ec-b432-046db621571b",
+            "symbol": "AAPL",
+            "exchange": "NASDAQ",
+            "asset_class": "us_equity",
+            "side": "buy",
+            ...
+          }
+        }
+      }
+      ```
+
+      The above message was for a `fill` event, however, there are many different events that can occur as an order progresses
+      through its lifecycle. The most common events are described in detail below:
+
+      - `new`
+      - `partial_fill`
+      - `fill`
+      - `done_for_day`
+      - `canceled`
+      - `expired`
+
+      Less common events are described below. Note that these states only occur on rare occasions, and most users will likely never
+      receive stream messages for these events.
+
+      - `pending_cancel`
+      - `stopped`
+      - `rejected`
+      - `suspended`
+      - `pending_new`
+      - `calculated`
+      - `restated`
+
+      The common and rare events all correspond to order statuses. For more information on what those statuses mean, please refer
+      back to the [Orders](/#tag/orders) section.
+
+      ## Account Updates
+      Users may also listen to the account updates stream under: `account_updates`. This stream provides clients with updates pertaining
+      to their brokerage accounts at Alpaca, including balance information. The account updates stream can be listened to in the same
+      way as the trade updates stream, and in fact, both streams can be listened to simultaneously:
+      ```
+      {
+        "action": "listen",
+        "data": {
+          "streams": ["account_updates", "trade_updates"]
+        }
+      }
+      ```
+      It is highly recommended that clients listen to both streams when using Alpaca's streaming API. Any time there is a state change to the listening user's account, an update is sent over the WebSocket:
+      ```
+      {
+        "stream": "account_updates",
+        "data": {
+          "id": "ef505a9a-2f3c-4b8a-be95-6b6f185f8a03",
+          "created_at": "2018-02-26T19:22:31Z",
+          "updated_at": "2018-02-27T18:16:24Z",
+          "deleted_at": null,
+          "status": "ACTIVE",
+          "currency": "USD",
+          "cash": "1241.54",
+          "cash_withdrawable": "523.71"
+        }
+      }
+      ```
+  - name: change-history
+    x-displayName: History
+    description: |
+      8/24/2018
+      - Add Paper Trading
+
+      6/19/2018
+      - Add Polygon integration
+
+
+securityDefinitions:
+  APIKey:
+    description: |
+      You need to put your API key in X-API-KEY header.
+    type: apiKey
+    name: X-API-KEY
+    in: header
+x-servers:
+  - url: //petstore.swagger.io/v2
+    description: Default server
+  - url: //petstore.swagger.io/sandbox
+    description: Sandbox server
+consumes:
+  - application/json
+  - application/msgpack
+produces:
+  - application/json
+  - application/msgpack
+paths:
+  '/account':
+    $ref: '/endpoints/accounts.yaml#/accounts'
+  '/orders':
+    $ref: '/endpoints/orders.yaml#/orders'
+  '/orders:by_client_order_id':
+    $ref: '/endpoints/orders.yaml#/order_by_client_order_id'
+  '/orders/{order_id}':
+    $ref: '/endpoints/orders.yaml#/order'
+  '/positions':
+    $ref: '/endpoints/positions.yaml#/positions'
+  '/positions/{symbol}':
+    $ref: '/endpoints/positions.yaml#/position'
+  '/assets':
+    $ref: '/endpoints/assets.yaml#/assets'
+  '/assets/{symbol}':
+    $ref: '/endpoints/assets.yaml#/asset'
+  '/clock':
+    $ref: '/endpoints/clock.yaml#/clock'
+  '/calendar':
+    $ref: '/endpoints/calendar.yaml#/calendar'

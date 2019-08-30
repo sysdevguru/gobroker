@@ -1,0 +1,29 @@
+Id:
+  type: string
+  format: uuid
+  example: 904837e3-3b76-47ec-b432-046db621571b
+ErrorResponse:
+  type: object
+  properties:
+    code:
+      type: integer
+      format: int32
+    message:
+      type: string
+errors:
+  NotFound:
+    description: resource not found
+    schema:
+      $ref: '#/ErrorResponse'
+  UnprocessableEntity:
+    description: unprocessable entity
+    schema:
+      $ref: '#/ErrorResponse'
+  Unauthorized:
+    description: unauthorized request
+    schema:
+      $ref: '#/ErrorResponse'
+  Forbidden:
+    description: forbidden request
+    schema:
+      $ref: '#/ErrorResponse'

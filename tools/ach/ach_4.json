@@ -1,0 +1,9 @@
+{ 
+    "account": "3AP05061",
+    "bankRoutingNumber": "121000358",
+    "bankAccount": "543219865",
+    "bankAccountOwnerName": "Name0 Family0",
+    "bankAccountType": "CHECKING",
+    "nickname": "test",
+    "approvalMethod": "PLAID"
+}

@@ -1,0 +1,85 @@
+branch: "3AP"
+repCode: "APA"
+modifyType: CREATE
+forms:
+  - formId:
+      title: new_account_form
+      version: 1
+    formSchemaHash:
+      algorithm: SHA-256
+      hash: gaROrA4p06UhSVCPw2ppyv7wqDP/nn4yY9QnqnqoEnA=
+    jsonData:
+      customerType: INDIVIDUAL
+      applicants:
+        - identity:
+            name:
+              givenName: 0TestUser0
+              familyName: 0Smith0
+              legalName: 0TestUser0 0Smith0
+            dateOfBirth: "1978-06-10"
+            socialSecurityNumber: 666-00-9991
+            citizenshipCountry: USA
+          contact:
+            homeAddress:
+              streetAddress:
+                - 350 N. St. Paul Street
+              city: Dallas
+              state: TX
+              postalCode: "75201"
+              country: USA
+            homeAddress:
+              streetAddress:
+                - 350 N. St. Paul Street
+              city: Dallas
+              state: TX
+              postalCode: "75201"
+              country: USA
+            phoneNumbers:
+              - phoneNumber: "2148675309"
+                phoneNumberType: HOME
+              - phoneNumber: "4157672676"
+                phoneNumberType: MOBILE
+              - phoneNumber: "5035551212"
+                phoneNumberType: MOBILE
+            emailAddresses:
+              - testingtheemailaddressworking@gmail.com
+              - m_harper2@gmail.com
+          maritalStatus: SINGLE
+          numDependents: 0
+          disclosures:
+            isControlPerson: "NO"
+            isPoliticallyExposed: "NO"
+            isAffiliatedExchangeOrFINRA: "NO"
+          employment:
+            employmentStatus: EMPLOYED
+            employer: APEX Clearing Corp.
+            positionEmployed: Software Developer
+
+      suitabilityProfile:
+        timeHorizon: AVERAGE
+        liquidityNeeds: SOMEWHAT_IMPORTANT
+
+      investmentProfile:
+        investmentObjective: INCOME
+        investmentExperience: NONE
+        annualIncomeUSD:
+          min: 50001
+          max: 100000
+        liquidNetWorthUSD:
+          min: 100001
+          max: 200000
+        totalNetWorthUSD:
+          min: 100001
+          max: 200000
+        riskTolerance: LOW
+        federalTaxBracketPercent: 8
+
+      serviceProfile:
+        dividendReinvestment: DO_NOT_REINVEST
+        issuerDirectCommunication: ACCEPT
+
+      tradeAuthorization:
+        isTradeAuthorization: "NO"
+
+      applicantSignature:
+        eSigned: "YES"

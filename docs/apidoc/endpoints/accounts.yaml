@@ -1,0 +1,17 @@
+accounts:
+  get:
+    tags:
+      - account
+    summary: Get the account
+    description:
+      Returns the account associated with the API key.
+    operationId: getAccount
+    responses:
+      '200':
+        description: successful operation
+        schema:
+          $ref: '/entities/account.yaml#/Account'
+      '401':
+        $ref: /entities/global.yaml#/errors/Unauthorized
+    security:
+      APIKey: []

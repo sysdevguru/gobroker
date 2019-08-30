@@ -1,0 +1,15 @@
+Calendar:
+  type: object
+  properties:
+    date:
+      description: current timestamp
+      type: string
+      example: "2018-01-03"
+    open:
+      description: market open time
+      type: string
+      example: "09:30"
+    close:
+      description: next market close time
+      type: string
+      example: "16:00"

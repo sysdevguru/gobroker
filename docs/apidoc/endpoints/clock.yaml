@@ -1,0 +1,17 @@
+clock:
+  get:
+    tags:
+      - clock
+    summary: Get the clock
+    description:
+      Returns the market clock.
+    operationId: getClock
+    responses:
+      '200':
+        description: successful operation
+        schema:
+          $ref: '/entities/clock.yaml#/Clock'
+      '401':
+        $ref: /entities/global.yaml#/errors/Unauthorized
+    security:
+      APIKey: []

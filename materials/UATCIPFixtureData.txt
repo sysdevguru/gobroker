@@ -1,0 +1,9 @@
+##UAT CIP Fixture Data
+You must have a zero (0) character in either the given or family name field
+You must use one of the following 666 social security number patterns
+  666-00-xxxx (results in an COMPLETE)  SKETCH = ACCEPTED
+  666-01-xxxx (results in an SUSPENDED) SKETCH = REJECT
+  666-02-xxxx (results in an ACTION_REQUIRED) SKETCH = NEEDS REVIEW
+  666-03-xxxx (results in an COMPLETE)  SKETCH = ACCEPTED
+  666-04-xxxx (results in an SUSPENDED) SKETCH = REJECT
+  666-05-xxxx (results in an ACTION_REQUIRED) SKETCH = NEEDS REVIEW

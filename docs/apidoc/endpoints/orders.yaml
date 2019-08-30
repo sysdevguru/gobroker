@@ -1,0 +1,135 @@
+parameters:
+  order_id:
+    in: path
+    name: order_id
+    type: string
+    format: uuid
+  client_order_id:
+    in: query
+    name: client_order_id
+    type: string
+order:
+  get:
+    tags:
+      - orders
+    summary: Get an order
+    description: |
+      Retrieves a single of order for the given `order_id`.
+    operationId: getOrder
+    parameters:
+      - $ref: '#/parameters/order_id'
+    responses:
+      '200':
+        description: successful operation
+        schema:
+          $ref: '/entities/order.yaml#/Order'
+      '401':
+        $ref: /entities/global.yaml#/errors/Unauthorized
+      '404':
+        $ref: /entities/global.yaml#/errors/NotFound
+    security:
+      APIKey: []
+  delete:
+    tags:
+      - orders
+    summary: Cancel an order
+    description: |
+      Attempts to cancel an open order. If the order is no longer cancellable
+      (example: `status=order_filled`), the server will respond with status 422,
+      and reject the request.
+    operationId: cancelOrder
+    parameters:
+      - $ref: '#/parameters/order_id'
+    responses:
+      '204':
+        description: successful operation
+      '401':
+        $ref: /entities/global.yaml#/errors/Unauthorized
+      '404':
+        $ref: /entities/global.yaml#/errors/NotFound
+      '422':
+        $ref: /entities/global.yaml#/errors/UnprocessableEntity
+    security:
+      APIKey: []
+order_by_client_order_id:
+  get:
+    tags:
+      - orders
+    summary: Get an order by client order id
+    operationId: getOrderByClientOrderId
+    parameters:
+      - $ref: '#/parameters/client_order_id'
+    responses:
+      '200':
+        description: successful operation
+        schema:
+          $ref: '/entities/order.yaml#/Order'
+      '401':
+        $ref: /entities/global.yaml#/errors/Unauthorized
+      '404':
+        $ref: /entities/global.yaml#/errors/NotFound
+    security:
+      APIKey: []
+orders:
+  get:
+    tags:
+      - orders
+    summary: Get a list of orders
+    description: |
+      Retrieves a list of orders for the account, filtered by the supplied query parameters.
+    operationId: getOrders
+    parameters:
+      - in: query
+        name: status
+        description: Order status to be queried. By default, open is used.
+        type: string
+        enum:
+          - open
+          - closed
+          - all
+        default: open
+      - in: query
+        name: until
+        type: string
+        format: date-time
+        description: limits the result with order time up to this value. the result is unlimited if ommitted
+      - in: query
+        name: limit
+        type: integer
+        format: int64
+        default: 50
+        maximum: 500
+    responses:
+      '200':
+        description: successful operation
+        schema:
+          type: array
+          items:
+            $ref: '/entities/order.yaml#/Order'
+      '401':
+        $ref: /entities/global.yaml#/errors/Unauthorized
+  post:
+    tags:
+      - orders
+    summary: Request a new order
+    description: |
+      Places a new order for the given account. An order request may be rejected if the account
+      is not authorized for trading, or if the tradable balance is insufficient to fill the order.
+    operationId: createOrder
+    parameters:
+      - in: body
+        name: body
+        description: Order parameters to be executed.
+        schema:
+          $ref: '/entities/order.yaml#/OrderRequest'
+    responses:
+      '200':
+        description: successful operation
+        schema:
+          $ref: '/entities/order.yaml#/Order'
+      '401':
+        $ref: /entities/global.yaml#/errors/Unauthorized
+      '403':
+        $ref: /entities/global.yaml#/errors/Forbidden
+      '422':
+        $ref: /entities/global.yaml#/errors/UnprocessableEntity

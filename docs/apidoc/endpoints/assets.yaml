@@ -1,0 +1,51 @@
+assets:
+  get:
+    tags:
+      - assets
+    summary: Get assets
+    operationId: getAssets
+    parameters:
+      - in: query
+        name: status
+        type: string
+        description: asset status. As default, returns any status assets.
+      - in: query
+        name: asset_class
+        description: asset class. As default, returns `us_equity` assets.
+        type: string
+        default: us_equity
+    responses:
+      '200':
+        description: successful operation
+        schema:
+          type: array
+          items:
+            $ref: '/entities/asset.yaml#/Asset'
+      '401':
+        $ref: /entities/global.yaml#/errors/Unauthorized
+      '422':
+        $ref: /entities/global.yaml#/errors/UnprocessableEntity
+    security:
+      APIKey: []
+asset:
+  get:
+    tags:
+      - assets
+    summary: Get an asset
+    operationId: getAsset
+    parameters:
+      - in: path
+        name: symbol
+        type: string
+        format: uuid
+    responses:
+      '200':
+        description: successful operation
+        schema:
+          $ref: '/entities/asset.yaml#/Asset'
+      '401':
+        $ref: /entities/global.yaml#/errors/Unauthorized
+      '404':
+        $ref: /entities/global.yaml#/errors/NotFound
+    security:
+      APIKey: []

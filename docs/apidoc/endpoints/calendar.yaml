@@ -1,0 +1,28 @@
+calendar:
+  get:
+    tags:
+      - calendar
+    summary: Get the calendar
+    description:
+      Returns the market calendar.
+    operationId: getCalendar
+    parameters:
+      - in: query
+        name: start
+        type: string
+        description: RFC3339 date string (inclusive)
+      - in: query
+        name: end
+        type: string
+        description: RFC3339 date string (inclusive)
+    responses:
+      '200':
+        description: successful operation
+        schema:
+          type: array
+          items:
+            $ref: '/entities/calendar.yaml#/Calendar'
+      '401':
+        $ref: /entities/global.yaml#/errors/Unauthorized
+    security:
+      APIKey: []

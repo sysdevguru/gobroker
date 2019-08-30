@@ -1,0 +1,37 @@
+Status:
+  type: string
+  enum:
+    - active
+    - delisted
+AssetClass:
+  type: string
+  enum:
+    - us_equity
+Exchange:
+  type: string
+  enum:
+    - NYSEMKT
+    - NYSEARCA
+    - NYSE
+    - NASDAQ
+  example: NASDAQ
+Asset:
+  type: object
+  properties:
+    id:
+      description: asset id
+      allOf:
+        - $ref: 'global.yaml#/Id'
+      example: 904837e3-3b76-47ec-b432-046db621571b
+    asset_class:
+      $ref: '#/AssetClass'
+    exchange:
+      $ref: '#/Exchange'
+    symbol:
+      type: string
+      example: AAPL
+    status:
+      $ref: '#/Status'
+    tradable:
+      description: Asset is tradable on Alpaca or not.
+      type: boolean

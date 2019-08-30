@@ -1,0 +1,106 @@
+{
+    "document": "# Trusted Contact Disclosure\n\nUnder FINRA Rule 4512 Apex Clearing Corporation is required to disclose to you (the customer) that Apex Clearing Corporation or an associated person of Apex Clearing Corporation is authorized to contact the trusted contact person and disclose information about the customer\u2019s account to address possible financial exploitation, to confirm the specifics of the customer\u2019s current contact information, health status, or the identity of any legal guardian, executor, trustee or holder of a power of attorney, or as otherwise permitted by FINRA Rule 2165.\n\n## Trusted Contact Information\n\n* Given Name: `givenName`\n* Family Name: `familyName`\n* Mailing Address:\n    * Street address: `mailingAddress.streetAddress`\n    * City: `mailingAddress.city`\n    * State: `mailingAddress.state`\n    * Postal code: `mailingAddress.postalCode`\n    * Country: `mailingAddress.country`\n* Phone Number:\n    * number: `phoneNumber.phoneNumber`\n    * type: `phoneNumber.phoneNumberType`\n* Email Address: `emailAddress`",
+    "additionalProperties": false,
+    "title": "trusted_contact_form",
+    "type": "object",
+    "version": 1,
+    "required": [
+      "givenName",
+      "familyName"
+    ],
+    "properties": {
+      "emailAddress": {
+        "format": "email",
+        "description": "email address must be provided if other contact info is unavailable\n",
+        "type": "string",
+        "example": "felix_forgetful@lofgren.dk"
+      },
+      "phoneNumber": {
+        "description": "phone number must be provided if other contact info is unavailable\n",
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "phoneNumber",
+          "phoneNumberType"
+        ],
+        "properties": {
+          "phoneNumber": {
+            "format": "ascii_printable",
+            "type": "string",
+            "example": "2148675309"
+          },
+          "phoneNumberType": {
+            "enum": [
+              "HOME",
+              "WORK",
+              "MOBILE",
+              "FAX",
+              "OTHER"
+            ]
+          }
+        }
+      },
+      "mailingAddress": {
+        "description": "mailing address must be provided if other contact info is unavailable\n",
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "streetAddress",
+          "city",
+          "country"
+        ],
+        "properties": {
+          "country": {
+            "format": "country-alpha-3",
+            "type": "string",
+            "example": "USA"
+          },
+          "streetAddress": {
+            "minItems": 1,
+            "maxItems": 3,
+            "description": "At most, 3 lines of streetAddress are available. For the custodian (2nd applicant) of\na CUSTODIAN account, only 2 lines are available.\n",
+            "type": "array",
+            "items": {
+              "format": "ascii_printable",
+              "type": "string",
+              "maxLength": 30
+            },
+            "example": [
+              "107 SE Washington St, Ste 256"
+            ]
+          },
+          "city": {
+            "format": "ascii_printable",
+            "type": "string",
+            "example": "Portland"
+          },
+          "postalCode": {
+            "format": "ascii_printable",
+            "description": "required for domestic and resident alien persons (domestic - person citizenshipCountry = USA and RA\n - citizenshipCountry != USA and addressCountry = USA)\n",
+            "type": "string",
+            "example": "97214"
+          },
+          "state": {
+            "format": "ascii_printable",
+            "description": "required for domestic and resident alien persons (domestic - person citizenshipCountry = USA and RA\n- citizenshipCountry != USA and addressCountry = USA)\n",
+            "type": "string",
+            "example": "OR"
+          }
+        }
+      },
+      "givenName": {
+        "minLength": 1,
+        "format": "ascii_printable",
+        "type": "string",
+        "maxLength": 20,
+        "example": "Elizabeth"
+      },
+      "familyName": {
+        "minLength": 1,
+        "format": "ascii_printable",
+        "type": "string",
+        "maxLength": 20,
+        "example": "Windsor"
+      }
+    }
+  }

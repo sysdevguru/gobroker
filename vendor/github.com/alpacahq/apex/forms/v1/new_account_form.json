@@ -1,0 +1,807 @@
+{
+  "document": "# New Account Application\n\nI (We) would like to open a brokerage account with you (\"my broker\"). I\nunderstand that you have designated Apex Clearing Corporation (\"Clearing Firm\")\nas your clearing firm.\n\nSelect exactly one account type:\n\n* `accountType.CASH` CASH \n* `accountType.MARGIN` MARGIN & SHORT (Requires margin agreement)\n* `accountType.OPTION` OPTION (Requires option agreement)\n\nSelect exactly one customer type:\n\n* `customerType.INDIVIDUAL` Individual\n* `customerType.JOINT` Joint\n* `customerType.CUSTODIAN` Custodian\n\nSpecify intention to add, exclude or update trusted contact\n\n* `trustedContact.INCLUDE`\n* `trustedContact.EXCLUDE`\n\n## Account Information\n\n* Applicant\n    * Prefix: `applicants.identity.name.prefix`\n    * Given Name: `applicants.identity.name.givenName`\n    * Additional Name: `applicants.identity.name.additionalNames`\n    * Family Name: `applicants.identity.name.familyName`\n    * Suffix: `applicants.identity.name.suffix`\n    * Legal Name: `applicants.identity.name.legalName`\n    * Date of birth: `applicants.identity.dateOfBirth`\n    * Social Security Number: `applicants.identity.socialSecurityNumber`\n    * Country of citizenship: `applicants.identity.citizenshipCountry`\n    * Country of birth: `applicants.identity.birthCountry`\n    * Permanent Resident: `applicants.identity.permanentResident`\n    * Visa Type:\n        * B-1 Business: `applicants.identity.visaType.B1`\n        * C-1 Transit: `applicants.identity.visaType.C1`\n        * E-1 Trader: `applicants.identity.visaType.E1`\n        * E-2 Investor: `applicants.identity.visaType.E2`\n        * E-3 Work: `applicants.identity.visaType.E3`\n        * F-1 Student: `applicants.identity.visaType.F1`\n        * H-1B Work: `applicants.identity.visaType.H1B`\n        * H-2B Work: `applicants.identity.visaType.H2B`\n        * H-3 Trainee: `applicants.identity.visaType.H3`\n        * K-1 Fiancee\/Fiance: `applicants.identity.visaType.K1`\n        * L-1 Work: `applicants.identity.visaType.L1`\n        * T-N Work: `applicants.identity.visaType.TN`\n        * Other: `applicants.identity.visaType.OTHER`\n    * Visa Expiration Date: `applicants.identity.visaExpirationDate`\n        \n* Phone Numbers (s):\n    * phoneNumber: `applicants.contact.phoneNumbers.phoneNumber`\n    * type: `applicants.contact.phoneNumbers.phoneNumberType`\n* Email address: `applicants.contact.emailAddresses`\n* Marital status: `applicants.maritalStatus`\n* Number of dependents: `applicants.numDependents`\n\n* Home address is required, and may not be a PO Box.\n    * Street address: `applicants.contact.homeAddress.streetAddress`\n    * City: `applicants.contact.homeAddress.city`\n    * State: `applicants.contact.homeAddress.state`\n    * Postal code: `applicants.contact.homeAddress.postalCode`\n\n* Mailing address may be a PO Box, and should be provided only if you wish to mail somewhere other than home or business addresses.\n    * Street address: `applicants.contact.mailingAddress.streetAddress`\n    * City: `applicants.contact.mailingAddress.city`\n    * State: `applicants.contact.mailingAddress.state`\n    * Postal code: `applicants.contact.mailingAddress.postalCode`\n\n* Business Address\n    * Street address: `applicants.employment.businessAddress.streetAddress`\n    * City: `applicants.employment.businessAddress.city`\n    * State: `applicants.employment.businessAddress.state`\n    * Postal code: `applicants.employment.businessAddress.postalCode`\n\n* Employment Status: `applicants.employment.employmentStatus`\n* Employer: `applicants.employment.employer`\n* Position: `applicants.employment.positionEmployed`\n* Years Employed: `applicants.employment.yearsEmployed`\n\n ## Additional Account Information\n\nHave you granted trading authorization to another party?\n\n* `tradeAuthorization.isTradeAuthorization`\n\nIf yes, request Trading Authorization Form and provide name of agent: `tradeAuthorization.agentName`\n\nIs the account holder a control person of a publicly traded company? (Director, Officer, or 10% Stock Owner)\n\n* `applicants.disclosures.isControlPerson`\n\nIf yes, please list the stock ticker symbol: `applicants.disclosures.companySymbols` I\n(We) promise to notify you of any change.\n\nAre you, or anyone authorized to trade in your account, affiliated with, work with or work for a member firm of a Stock Exchange or FINRA?\n\n* `applicants.disclosures.isAffiliatedExchangeOrFINRA`\n\nIf yes, name of firm: `applicants.disclosures.firmName`\n\nIs the account maintained for a current or former Politically Exposed Person or Public Official (includes U.S. and Foreign Individuals)?\n\n* `applicants.disclosures.isPoliticallyExposed`\n\nIf yes, please provide the names of that official and official's immediate family members (including former spouses).:  `applicants.disclosures.politicalExposureDetail.immediateFamily`\n\nIf yes, please provide the name of the related political organization.: `applicants.disclosures.politicalExposureDetail.politicalOrganization`\n\n## Suitability Information\n\n* Time Horizon (The number of years planned to invest to achieve a particular financial goal):\n   * `suitabilityProfile.timeHorizon.SHORT` Short (Less than 3 years)\n   * `suitabilityProfile.timeHorizon.AVERAGE` Average (4 to 7 years)\n   * `suitabilityProfile.timeHorizon.LONGEST` Longest (8 years or more)\n\n* Liquidity Needs (The ability to quickly and easily convert all or a portion of the account assets into cash\n  without experiencing significant loss): `suitabilityProfile.liquidityNeeds`\n\n## Investment Profile\n\n* Investment Objective: `investmentProfile.investmentObjective`\n\n* Investment Experience: `investmentProfile.investmentExperience`\n\n* Annual Income (from all sources):\n    * `investmentProfile.annualIncomeUSD.min` Min\n    * `investmentProfile.annualIncomeUSD.max` Max\n\n* Liquid Net Worth (cash & liquid investments only):\n    * `investmentProfile.liquidNetWorthUSD.min` Min\n    * `investmentProfile.liquidNetWorthUSD.max` Max\n\n\n* Total Net Worth (excluding residence):\n    * `investmentProfile.totalNetWorthUSD.min` Min\n    * `investmentProfile.totalNetWorthUSD.max` Max\n\n* Risk Tolerance: `investmentProfile.riskTolerance`\n\n* Tax Bracket `investmentProfile.federalTaxBracketPercent`\n\n## Enhanced Account Features\n\nFree Householding Service:\nThe householding service combines mailings of account statements, tax-related statements, proxies, prospectuses, annual reports, and other eligible documents for accounts within your household into one envelope.\n\n* Please select one of the following options:\n    * `serviceProfile.householdingService.YES` I want to utilize the householding service.  This option requires a Householding Authorization form to be completed.\n    * `serviceProfile.householdingService.NO` I do not want to household this new account with any of my other accounts.\n\nFree Dividend Reinvestment:\nSelect whether or not you would like to have your dividends reinvested on all eligible securities.  You can always change your selection later by calling your investment representative.\n\n* Please select one of the following options:\n    * `serviceProfile.dividendReinvestment.REINVEST` Reinvest dividends on ALL eligible securities.\n    * `serviceProfile.dividendReinvestment.DO_NOT_REINVEST` Please do not reinvest any dividends.  Pay dividends in cash to my account.\n\n## Service Instructions\n\n* When Securities are SOLD: `serviceProfile.securitySaleProceeds`\n\nWHEN SECURITIES ARE PURCHASED THEY WILL BE HELD IN THE FIRM NAME\n\n* DIVIDENDS: `serviceProfile.dividendProceeds`\n* IF send, select frequency: `serviceProfile.dividendProceedsSendFrequency`\n\n* Other alternative for dividend distribution or requests for physical certificate delivery may be available.  Contact your investment representative.\n\n## Direct Communication Rule 14b-1(c)\n\nRule 14b-1(c) of the Securities Exchange Act, unless you object, requires us to disclose to an issuer, upon its request, the names, addresses, and securities positions of our customers who are beneficial owners of the issuer\u2019s securities held by us in nominee name.  The issuer would be permitted to use your name and other related information for corporation communication only. If you object to this disclosure check the box below.\n\n`serviceProfile.issuerDirectCommunication` Yes, I do object to the disclosure of such information.\n\n\n## W-9 Certification\n\nUnder penalties of perjury, I certify that: (1) The number shown on this form is my correct taxpayer identification number (or I am waiting for a number to be issued to me), and (2) I am not subject to backup withholding because: (a) I am exempt from backup withholding, or (b) I have not been notified by the Internal Revenue Service (IRS) that I am subject to backup withholding as a result of a failure to report all interest or dividends, or (c) the IRS has notified me that I am no longer subject to backup withholding, and (3) I am a U.S. citizen or other U.S. person (defined below), and (4) The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is correct. Definition of a U.S. person. For federal tax return purposes, you are considered a U.S. person if you are: An individual who is a U.S. citizen or U.S. resident alien, A partnership, corporation, company, or association created or organized in the United States or under the laws of the  United  States,  An  estate  (other  than  a  foreign  estate),  or  A  domestic  trust  (as  defined  in  Regulations  section  301.7701-7).\n\nThe Internal Revenue Service does not require your consent to any provisions of this document other than the certifications required to avoid backup withholding.\n\n##Signatures\n\nI authorize my broker and\/ or Clearing Firm to obtain a consumer report at the time of application to verify my creditworthiness and to obtain a consumer report from time to time for updates, renewals, extensions, and collection activity on any approved account. Upon my written request, my broker and\/ or Clearing Firm will disclose to me whether it obtained a report, and if so, the name and address of the consumer-reporting agency that provided it. In the event that my account is denied by Clearing Firm, as a result of the consumer report verification, I authorize Clearing Firm to provide to my broker the reason(s) for such denial.\n\nBY SIGNING THIS APPLICATION, I ACKNOWLEDGE THE FOLLOWING: (1) THAT, PAGE 4 PARAGRAPH 10 OF THE CUSTOMER\nACCOUNT AGREEMENT CONTAINS A PREDISPUTE ARBITRATION CLAUSE AND IN ACCORDANCE WITH THIS AGREEMENT I (WE) AGREE IN ADVANCE TO ARBITRATE ANY CONTROVERSIES WHICH MAY ARISE BETWEEN OR AMONG ME (US), MY BROKER, AND\/OR CLEARING FIRM, (2) RECEIPT OF A COPY OF THE CUSTOMER ACCOUNT AGREEMENT FOLLOWING THIS APPLICATION AND MY (OUR) AGREEMENT WITH THE TERMS THEREIN AND (3) THE INFORMATION PROVIDED ABOVE IS ACCURATE.\n\n* Signature: `applicantSignature`\n \n* Registered Rep Approver: `registeredRepApprover.approverName`\n* Principal Approver: `principalApprover.approverName`\n\n\n# Customer Account Agreement\n\nThis Customer Account Agreement (the \u201cAgreement\u201d) sets forth the respective rights and obligations of Apex Clearing Corporation (\u201cyou\u201d or \u201cyour\u201d or \u201cApex\u201d) and the Customer\u2019s (as defined below) brokerage firm (the \u201cIntroducing Broker\u201d), and the customer(s) identified on the New Account Application(the \u201cCustomer\u201d) in connection with the Customer\u2019s brokerage account with the Introducing Broker (\u201cthe Account\u201d).  The Customer hereby agrees as follows with respect to the Account, which the Customer has established with the Introducing Broker for the purchase, sale or carrying of securities or contracts relating thereto and\/or the borrowing of funds, which transactions are cleared through you.  To help the government fight the funding of terrorism and money laundering, Federal law requires all financial institutions to obtain, verify, and record information that identifies each person who opens an account. In order to open an account, the Customer will provide information that will allow you to identify the Customer including, but not limited to, the Customer\u2019s name, address, date of birth, and the Customer\u2019s driver\u2019s license or other identifying documents.\n\n1. Applicable Rules and Regulations.  All transactions for the Account shall be subject to the constitution, rules, regulations, customs and usages of the exchange or market and its clearing house, if any, upon which\nsuch transactions are executed, except as otherwise specifically provided in this Agreement.\n\n2.  Definitions. \"Obligations\" means all indebtedness, debit balances, liabilities or other obligations of any kind of the Customer to you, whether now existing or hereafter arising.  \"Securities and other property\"\nshall include, but shall not be limited to, money, securities, commodities or other property of every kind and nature and all contracts and options relating thereto, whether for present or future delivery.\n\n3. Investment Objective Definitions. \u201cCapital Preservation\u201d - a conservative investment strategy characterized by a desire to avoid risk of loss; \u201cIncome\u201d - strategy focused on current income rather\nthan capital appreciation; \u201cGrowth\u201d - investing in stocks with strong earnings and\/or revenue growth or potential; \u201cSpeculation\u201d - taking larger risks, usually by frequent trading, with hope of higher than-average gain.\nAll strategies involve various types and levels of risk, the most common of which are market, credit, inflation, business and interest rate.\n\n4.  Breach; Security Interest. Whenever in your discretion you consider it necessary for your protection, or for the protection of the Customer\u2019s Introducing Broker or in the event of, but not limited to; (i) any\nbreach by the Customer of this or any other agreement with you or (ii) the Customer's failure to pay for securities and other property purchased or to deliver securities and other property sold, you may sell any\nor all securities and other property held in any of the Customer's  accounts (either individually or jointly with others), cancel or complete any open orders for the purchase or sale of any securities and other property, and\/or borrow or buy-in any securities and other property required to make delivery against any sale, including a short sale, effected for the Customer, all without notice or demand for deposit of collateral, other notice of sale or purchase, or other notice or advertisement, each of which is expressly waived by the Customer, and\/or you may require the Customer to deposit cash or adequate collateral to the Customer's account prior to any settlement date in order to assure the performance or payment of any open contractual commitments and\/or unsettled transactions. You have the right to refuse to execute securities transactions for the Customer at any time and for any reason.  Any and all securities and other property belonging to the Customer or in which the Customer may have an interest held by you or carried in any of the Customer's accounts with you (either individually or jointly with others) shall be subject to a first and prior security interest and lien for the discharge of the Customer's obligations to you, wherever or however arising and without regard to whether or not you have made advances with respect to such securities and other property, and you are hereby authorized to sell and\/or purchase any and all securities and other property in any of the Customer's accounts, and\/or to transfer\nany such securities and other property among any of the Customer's accounts to the fullest extent of the law and without notice where allowed.  The losses, costs and expenses, including but not limited to reasonable attorneys' fees and expenses, incurred and payable or paid by you in the (i) collection of a debit balance and\/or any unpaid deficiency in the accounts of the Customer with you or (ii) defense of any matter arising out of the Customer\u2019s securities transactions, shall be payable to you by the Customer. The Customer understands that because of circumstances beyond broker-dealers control, its customers\u2019 voting rights may be impaired. For example, if the stock of a company that another customer has purchased has not yet been received from the seller(s), then other customers\u2019 abilities to vote that company\u2019s stock could be impaired until those shares are received.  In addition, if the stock of a company that the Customer has purchased has not yet been received from the seller(s), then payments received by the Customer from the Introducing Broker, in lieu of the dividends on that stock not yet received, may receive tax treatment less favorable than that accorded to dividends.\n\n5.  Cancellation.  You are authorized, in your discretion, should you for any reason whatsoever deem it necessary for your protection, without notice, to cancel any outstanding order, to close out the accounts of the Customer, in whole or in part, or to close out any commitment made on behalf of the Customer.\n\n6.  Payment of Indebtedness Upon Demand.  The Customer shall at all times be liable for the payment upon demand of any obligations owing from the Customer to you, and the Customer shall be liable to you for any deficiency remaining in any such accounts in the event of the liquidation thereof (as contemplated in Paragraph 4 of this Agreement or otherwise), in whole or in part, by you or by the Customer; and the Customer shall make payment of such obligations upon demand.\n\n7. Accounts Carried as Clearing Broker.  The Customer understands that you are carrying the accounts of the Customer as clearing broker by arrangement with the Customer's Introducing Broker through whose courtesy the account of the Customer has been introduced to you. Until receipt from the Customer of written notice to the contrary, you may accept from and rely upon the Customer\u2019s Introducing Broker for (a) orders for the purchase or sale in said account of securities and other property, and (b) any other instructions concerning the Customer's accounts. The Customer represents that the Customer understands that you act only to clear trades introduced by the Customer's Introducing Broker and to effect other back office functions for the Customer's introducing broker.  The Customer confirms to you that the Customer is relying for any advice concerning the Customer's accounts solely on the Customer's Introducing Broker.  The Customer understands that all representatives, employees and other agents with whom the Customer communicates concerning the Customer's account are agents of the Introducing Broker, and not your representatives, employees or other agents and the Customer will in no way hold you liable for any trading losses that the Customer may incur. The Customer understands that you are not a principal of or partner with, and do not control in any way, the Introducing Broker or its representatives, employees or other agents. The Customer understands that you will not review the Customer's accounts and will have no responsibility for trades made in the Customer's accounts.  You shall not be responsible or liable for any acts or omissions of the Introducing Broker or its representatives, employees or other agents. Notwithstanding the foregoing, in the event that the Customer initiates a claim against you in your capacity as clearing broker and does not prevail, the Customer shall be responsible for the costs and expenses associated with your defense of such claim.  The Customer understands you shall be entitled to exercise and enforce directly against the Customer all rights granted to the Introducing Broker.\n\n8. Accounts Carried as Custodian. In some cases the Customer\u2019s account is being carried by arrangement with the Customer\u2019s Investment Advisor or Investment Manager, who uses you as their Broker-Dealer custodian. The Customer acknowledges that your role as custodian is to hold or custody account assets, distribute or collect funds on behalf of the Customer\u2019s account, execute and clear trades under instruction of the Customer\u2019s Investment Advisor or Investment Manager, generate account statements and provide other custodial services as may be mandated by various regulatory standards and requirements.  The Customer understands that in the capacity as custodian, you will not offer investment advice, review the Customer\u2019s accounts, and will have no responsibility for trades made in the Customer\u2019s accounts. Additionally, in your capacity as custodian, you will not verify the accuracy of management fees that the Customer pays to Investment Advisors or Investment Managers pursuant to the terms of the Investment Management Agreement executed between the Customer and the Investment Advisor or Investment Manager.  Notwithstanding the foregoing, in the event that the Customer initiates a claim against you in your capacity as custodial broker and does not prevail, the Customer shall be responsible for the costs and expenses associated with your defense of such claim.\n\n9.  Communications.  You may send communications to the Customer at the Customer's address on the New Account Application or at such other address as the Customer may hereafter give you in writing, and all communications so sent, whether by mail, telegraph, or otherwise, shall be deemed given to the Customer personally, whether actually received or not. Reports of execution of orders and statements of accounts of the Customer shall be conclusive if not objected to in writing to you, the former within five (5) days and the latter within ten (10) days, after forwarding by you by mail or otherwise.  In consideration of your sending any mail to me in care of a Post Office Box Address or a third party,  I hereby agree that \u201call correspondence of any nature whatsoever\u201d sent to me in such address will have the same force and effect as if it had been delivered to me personally.\n\n10.  ARBITRATION  AGREEMENT.  THIS  AGREEMENT CONTAINS  A PREDISPUTE  ARBITRATION CLAUSE. BY SIGNING AN  ARBITRATION AGREEMENT THE PARTIES AGREE AS FOLLOWS:\n\n   a.  ALL PARTIES TO THIS AGREEMENT ARE GIVING UP THE RIGHT TO SUE EACH OTHER IN COURT, INCLUDING THE RIGHT TO A TRIAL BY JURY EXCEPT AS PROVIDED BY THE RULES OF THE ARBITRATION FORM IN WHICH A CLAIM IS FILED;\n   b.  ARBITRATION AWARDS ARE GENERALLY FINAL AND BINDING; A PARTY\u2019S ABILITY TO HAVE A COURT REVERSE OR MODIFY AN ARBITRATION AWARD IS VERY LIMITED.\n   c.  THE ABILITY OF THE PARTIES TO OBTAIN DOCUMENTS, WITNESS STATEMENTS AND OTHER DISCOVERY IS GENERALLY MORE LIMITED IN ARBITRATION THAN IN COURT PROCEEDINGS;\n   d.  THE ARBITRATORS DO NOT HAVE TO EXPLAIN THE REASON(S) FOR THEIR AWARD UNLESS,IN AN ELIGIBLE CASE, A JOINT REQUEST FOR AN EXPLAINED DECISION HAS BEEN SUBMITTED BY ALL PARTIES TO THE PANEL AT LEAST 20 DAYS PRIOR TO THE FIRST SCHEDULED HEARING DATE.\n   e.  THE PANEL OF ARBITRATORS MAY INCLUDE A MINORITY OF ARBITRATORS WHO WERE OR ARE AFFILIATED WITH THE SECURITIES INDUSTRY.\n   f.   THE RULES OF SOME ARBITRATION FORUMS MAY IMPOSE TIME LIMITS FOR BRINGING A CLAIM IN ARBITRATION.  IN SOME CASES, A CLAIM THAT IS INELIGIBLE FOR ARBITRATION MAY BE BROUGHT IN COURT.\n   g.  THE RULES OF THE ARBITRATION FORUM IN WHICH THE CLAIM IS FILED, AND ANY AMENDMENTS THERETO, SHALL BE INCORPORATED INTO THIS AGREEMENT.\n\nTHE FOLLOWING ARBITRATION AGREEMENT SHOULD BE READ IN CONJUNCTION WITH THE DISCLOSURES ABOVE.  ANY AND ALL CONTROVERSIES, DISPUTES OR CLAIMS BETWEEN THE CUSTOMER AND YOU, OR THE INTRODUCING BROKER, OR THE AGENTS, REPRESENTATIVES, EMPLOYEES, DIRECTORS, OFFICERS OR CONTROL PERSONS OF YOU OR THE INTRODUCING BROKER, ARISING OUT OF, IN CONNECTION WITH, FROM OR WITH RESPECT TO (a) ANY PROVISIONS OF OR THE VALIDITY OF THIS AGREEMENT OR ANY RELATED AGREEMENTS, (b) THE RELATIONSHIP OF THE PARTIES HERETO, OR (c) ANY CONTROVERSY ARISING OUT OF YOUR BUSINESS, THE INTRODUCING BROKER'S BUSINESS OR THE CUSTOMER'S ACCOUNTS, SHALL BE CONDUCTED PURSUANT TO THE CODE OF ARBITRATION PROCEDURE OF THE FINANCIAL INDUSTRY REGULATORY AUTHORITY (\u201cFINRA\u201d).  THE  DECISION  AND AWARD OF THE ARBITRATOR(S) SHALL BE CONCLUSIVE AND BINDING UPON ALL PARTIES, AND ANY JUDGMENT UPON ANY AWARD RENDERED MAY BE ENTERED IN A COURT HAVING JURISDICTION THEREOF, AND NEITHER PARTY SHALL OPPOSE SUCH ENTRY.  No person shall bring a putative or certified class action to arbitration, nor seek to enforce any pre-dispute arbitration agreement against any person who has initiated in court a putative class action; or who is a member of a putative class who has not opted out of the class with respect to any claims encompassed by the putative class action until: (i) the class certification is denied; or (ii) the class is de-certified; or (iii) the customer is excluded from the class by the court.  Such forbearance to enforce an agreement to arbitrate shall not constitute a waiver of any rights under this agreement except to the extent stated herein.\n\n11. Representations. The Customer represents that the Customer is of majority age.  The Customer represents either that the Customer is not an employee of any exchange, or of any corporation of which any exchange owns a majority of the capital stock, or of a member of any exchange, or of a member firm or member corporation registered on any exchange or of a bank, trust company, insurance company or of any corporation, firm or individual engaged in the business dealing either as broker or as principal in securities, bills of exchange, acceptances or other forms of commercial paper, or alternatively, that the Customer has obtained and will provide to you additional documentation which may include information required under FINRA Rule 3210(407) from its employer authorizing the Customer to open and maintain an account with you. If the Customer is a corporation, partnership, trust or other entity, the Customer represents that its governing instruments permit this Agreement, that this Agreement has been authorized by all applicable persons and that the signatory on the New Account Application is authorized to bind the Customer. The Customer represents that the Customer shall comply with all applicable laws, rules and regulations in connection with the Customer's account. The Customer further represents that no one except the Customer has an interest in the account or accounts of the Customer with you.\n\n12.  Joint Accounts.  If the New Account Application indicates that the Account shall consist of more than one person, the Customer's obligations under this Agreement shall be joint and several. References to the \"Customer\" shall include each of the customers identified on the New Account Application. You may rely on transfer or other instructions from any one of the Customers in a joint account, and such instructions shall be binding on each of the Customers. You may deliver securities or other property to, and send confirmations; notices, statements and communications of every kind, to any one of the Customers, and such action shall be binding on each of the Customers. Notwithstanding the foregoing, you are authorized in your discretion to require joint action by the joint tenants with respect to any matter concerning the joint account, including but not limited to the giving or cancellation of orders and the withdrawal of money or securities. In the case of Tenants by the Entirety accounts, joint action will be required for all matters concerning the joint account. Tenants by Entirety is not recognized in certain jurisdictions, and, where not expressly allowed, will not be a permitted designation of the account.\n\n13. Other Agreements. If the Customer trades any options, the Customer agrees to be bound by the terms of your Customer Option Agreement. The Customer understands that copies of these agreements are available from you and, to the extent applicable, are incorporated by reference herein.  The terms of these other agreements are in addition to the provisions of this Agreement and any other written agreements between you and the Customer.\n\n14.  Data Not Guaranteed.  The Customer expressly agrees that any data or online reports is provided to the Customer without warranties of any kind, express or implied, including but not limited to, the implied warranties of merchantability, fitness of a particular purpose or non-infringement.  The Customer acknowledges that the information contained in any reports provided by you is obtained from sources believed to be reliable but is not guaranteed as to its accuracy of completeness. Such information could include technical or other inaccuracies, errors or omissions.  In no event shall you or any of your affiliates be liable to the Customer or any third party for the accuracy, timeliness, or completeness of any information made available to the Customer or for any decision made or taken by the Customer in reliance upon such information. In no event shall you or your affiliated entities be liable for any special incidental, indirect or consequential damages whatsoever, including, without limitation, those resulting from loss of use, data or profits, whether or not advised of the possibility of damages, and on any theory of liability, arising out of or in connection with the use of any reports provided by you or with the delay or inability to use such reports.\n\n15. Payment for Order Flow Disclosure. Depending on the security traded and absent specific direction from the Customer, equity and option orders are routed to market centers (i.e., broker-dealers, primary exchanges or electronic communication networks) for execution. Routing decisions are based on a number of factors including the size of the order, the opportunity for price improvement and the quality of order executions, and decisions are regularly reviewed to ensure the duty of best execution is met.  You or the Introducing Broker may receive compensation or other consideration for the placing of orders with market centers for execution. The amount of the compensation depends on the agreement reached with each venue. The source and nature of compensation relating to the Customer's transactions will be furnished upon written request.\n\n16. Credit Check.  You are authorized, in your discretion, should you for any reason deem it necessary for your protection to request and obtain a consumer credit report for the Customer.\n\n17.  Miscellaneous. If any provision of this Agreement is held to be invalid or unenforceable, it shall not affect any other provision of this Agreement. The headings of each section of this Agreement are descriptive only and do not modify or qualify any provision of this Agreement.  This Agreement and its enforcement shall be governed by the laws of the state of Texas and shall cover individually and collectively all accounts which the Customer has previously opened, now has open or may open or reopen with you, or any introducing broker, and any and all previous, current and future transactions in such accounts. Except as provided in this Agreement, no provision of this Agreement may be altered, modified or amended unless in writing signed by your authorized representative.  This Agreement and all provisions shall inure to the benefit of you and your successors, whether by merger, consolidation or otherwise, your assigns, the Introducing Broker, and all other persons specified in Paragraph 8.  You shall not be liable for losses caused directly or indirectly by any events beyond your reasonable control, including without limitation, government restrictions, exchange or market rulings, suspension of trading or unusually heavy trading in securities, a general change in economic, political or financial conditions, war or strikes.  You may transfer the accounts of the Customer to your successors and assigns.  This Agreement shall be binding upon the Customer and the heirs, executors, administrators, successors and assigns of the Customer.  Failure to insist on strict compliance with this Agreement is not considered a waiver of your rights under this Agreement. At your discretion, you may terminate this Agreement at anytime on notice to the Customer, the Customer will continue to be responsible for any obligation incurred by the Customer prior to termination. The Customer may not assign the Customer\u2019s rights or delegate the Customer\u2019s obligations under this Agreement, in whole or in part, without your prior consent.\n\n18. Account Protection.  As a member of the Securities Investor Protection Corporation (SIPC), funds are available to meet customer claims up to a ceiling of $500,000, including a maximum of $250,000 for cash claims.  For additional information regarding SIPC coverage, including a brochure, please contact SIPC at (202) 371-8300 or visit www.sipc.org. Apex has purchased an additional insurance policy through a group of London Underwriters (with Lloyd's of London Syndicates as the Lead Underwriter) to supplement SIPC protection. This additional insurance policy becomes available to\ncustomers in the event that SIPC limits are exhausted and provides protection for securities and cash up to an aggregate of $600 million. This is provided to pay amounts in addition to those returned in SIPC liquidation. This additional insurance policy is limited to a combined return to any customer from a Trustee, SIPC and London Underwriters of $150 million, including cash of up to $2.15 million.  Similar to SIPC protection, this additional insurance does not protect against a loss in the market value of securities.\n\n19. TAX TREATY ELIGIBILITY- This agreement shall serve as the Customer\u2019s certification that you are eligible to receive tax treaty benefits between the country or (of) residence indicated on the new account form and the country(ies) of origin holding jurisdiction over the instruments held within the customer\u2019s account.",
+  "additionalProperties": false,
+  "title": "new_account_form",
+  "type": "object",
+  "version": 1,
+  "required": [
+    "customerType",
+    "applicants",
+    "tradeAuthorization",
+    "applicantSignature"
+  ],
+  "properties": {
+    "suitabilityProfile": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "timeHorizon": {
+          "enum": [
+            "SHORT",
+            "AVERAGE",
+            "LONGEST"
+          ]
+        },
+        "liquidityNeeds": {
+          "enum": [
+            "VERY_IMPORTANT",
+            "SOMEWHAT_IMPORTANT",
+            "NOT_IMPORTANT"
+          ]
+        }
+      }
+    },
+    "customerType": {
+      "enum": [
+        "INDIVIDUAL",
+        "IRA",
+        "JOINT",
+        "CUSTODIAN"
+      ]
+    },
+    "tradeAuthorization": {
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "isTradeAuthorization"
+      ],
+      "properties": {
+        "agentName": {
+          "format": "ascii_printable",
+          "description": "The name of the party to whom trading authorization is granted. Required if and only if\nisTradeAuthorization is \"YES\"\n",
+          "type": "string",
+          "example": "Joe Montana"
+        },
+        "isTradeAuthorization": {
+          "enum": [
+            "YES",
+            "NO"
+          ],
+          "example": "YES"
+        }
+      }
+    },
+    "accountType": {
+      "description": "for retirement account, MARGIN is not a valid accountType\n",
+      "enum": [
+        "CASH",
+        "MARGIN",
+        "OPTION"
+      ]
+    },
+    "applicants": {
+      "description": "Array of account applicants. The first applicant is considered\nthe primary applicant for all accounts. The second applicant is the\njoint owner for JOINT accounts, or the custodian for CUSTODIAN accounts.\n",
+      "type": "array",
+      "items": {
+        "minItems": 1,
+        "maxItems": 2,
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "identity",
+          "contact",
+          "disclosures"
+        ],
+        "properties": {
+          "numDependents": {
+            "type": "integer",
+            "example": 2
+          },
+          "identity": {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "name",
+              "dateOfBirth",
+              "citizenshipCountry"
+            ],
+            "properties": {
+              "visaExpirationDate": {
+                "format": "date",
+                "description": "Required when a valid visaType is selected.",
+                "type": "string",
+                "example": "2003-04-23"
+              },
+              "socialSecurityNumber": {
+                "format": "ssn",
+                "description": "social security number with dashes; required for domestic and resident alien persons (domestic -\nperson citizenshipCountry = USA and RA - citizenshipCountry != USA and addressCountry = USA)\n",
+                "type": "string",
+                "example": "123-45-6789"
+              },
+              "name": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "givenName",
+                  "familyName",
+                  "legalName"
+                ],
+                "properties": {
+                  "legalName": {
+                    "minLength": 1,
+                    "format": "ascii_printable",
+                    "description": "For a joint account, legalName of the primary applicant can be at most 28 characters.\nFor a joint account, legalName of the joint applicant can be at most 21 characters.\nIn all cases, familyName must be included as a substring of legalName.\n",
+                    "type": "string",
+                    "maxLength": 30,
+                    "example": "Elizabeth A M Windsor II"
+                  },
+                  "prefix": {
+                    "minLength": 1,
+                    "format": "ascii_printable",
+                    "type": "string",
+                    "maxLength": 5,
+                    "example": "HRH"
+                  },
+                  "givenName": {
+                    "minLength": 1,
+                    "format": "ascii_printable",
+                    "type": "string",
+                    "maxLength": 20,
+                    "example": "Elizabeth"
+                  },
+                  "familyName": {
+                    "minLength": 1,
+                    "format": "ascii_printable",
+                    "type": "string",
+                    "maxLength": 20,
+                    "example": "Windsor"
+                  },
+                  "suffix": {
+                    "minLength": 1,
+                    "format": "ascii_printable",
+                    "type": "string",
+                    "maxLength": 5,
+                    "example": "II"
+                  },
+                  "additionalNames": {
+                    "minItems": 1,
+                    "maxItems": 5,
+                    "description": "The length of additionalNames.join(\" \") may be no more than 20.\nInitials may be used to work around length restrictions, e.g. [A, M]\n",
+                    "type": "array",
+                    "items": {
+                      "format": "ascii_printable",
+                      "type": "string",
+                      "maxLength": 20
+                    },
+                    "example": [
+                      "Alexandra",
+                      "Mary"
+                    ]
+                  }
+                }
+              },
+              "birthCountry": {
+                "format": "country-alpha-3",
+                "description": "ISO 3166-1 alpha-3 (3 letter) country code, in all-caps; this is a required field for Foreign\naccounts (any account with a non US address and citizenshipCountry); also this will be required for resident\nalien accounts (citizenshipCountry != USA but Address Country = USA) when permanentResident = no.\n",
+                "type": "string",
+                "example": "DEU"
+              },
+              "dateOfBirth": {
+                "format": "date",
+                "type": "string",
+                "example": "2003-04-23"
+              },
+              "visaType": {
+                "description": "This field will be required for resident alien accounts when permanentResident and birthCountry on OFAC = no. If other is selected the account will reject.",
+                "enum": [
+                  "B1",
+                  "C1",
+                  "E1",
+                  "E2",
+                  "E3",
+                  "F1",
+                  "H1B",
+                  "H2B",
+                  "H3",
+                  "K1",
+                  "L1",
+                  "TN",
+                  "OTHER"
+                ],
+                "example": "E1"
+              },
+              "citizenshipCountry": {
+                "format": "country-alpha-3",
+                "description": "ISO 3166-1 alpha-3 (3 letter) country code, in all-caps",
+                "type": "string",
+                "example": "USA"
+              },
+              "permanentResident": {
+                "description": "This will be a required field for resident alien accounts; citizenshipCountry != USA but Address\nCountry = USA.\n",
+                "enum": [
+                  "YES",
+                  "NO"
+                ],
+                "example": "YES"
+              }
+            }
+          },
+          "contact": {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "homeAddress",
+              "phoneNumbers"
+            ],
+            "properties": {
+              "emailAddresses": {
+                "description": "emails should be listed in priority order",
+                "type": "array",
+                "items": {
+                  "format": "email",
+                  "type": "string",
+                  "example": "felix_forgetful@lofgren.dk"
+                },
+                "example": [
+                  "felix_forgetful@lofgren.dk"
+                ]
+              },
+              "mailingAddress": {
+                "description": "mailing address should be provided if homeAddress is not\na physical address (e.g., is a PO Box)\n",
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "streetAddress",
+                  "city",
+                  "country"
+                ],
+                "properties": {
+                  "country": {
+                    "format": "country-alpha-3",
+                    "type": "string",
+                    "example": "USA"
+                  },
+                  "streetAddress": {
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "description": "At most, 3 lines of streetAddress are available. For the custodian (2nd applicant) of\na CUSTODIAN account, only 2 lines are available.\n",
+                    "type": "array",
+                    "items": {
+                      "format": "ascii_printable",
+                      "type": "string",
+                      "maxLength": 30
+                    },
+                    "example": [
+                      "107 SE Washington St, Ste 256"
+                    ]
+                  },
+                  "city": {
+                    "format": "ascii_printable",
+                    "type": "string",
+                    "example": "Portland"
+                  },
+                  "postalCode": {
+                    "format": "ascii_printable",
+                    "description": "required for domestic and resident alien persons (domestic - person citizenshipCountry = USA and RA\n - citizenshipCountry != USA and addressCountry = USA)\n",
+                    "type": "string",
+                    "example": "97214"
+                  },
+                  "state": {
+                    "format": "ascii_printable",
+                    "description": "required for domestic and resident alien persons (domestic - person citizenshipCountry = USA and RA\n- citizenshipCountry != USA and addressCountry = USA)\n",
+                    "type": "string",
+                    "example": "OR"
+                  }
+                }
+              },
+              "phoneNumbers": {
+                "minItems": 1,
+                "maxItems": 4,
+                "description": "phone numbers should be listed in priority order",
+                "type": "array",
+                "items": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "phoneNumber",
+                    "phoneNumberType"
+                  ],
+                  "properties": {
+                    "phoneNumber": {
+                      "format": "ascii_printable",
+                      "type": "string",
+                      "example": "2148675309"
+                    },
+                    "phoneNumberType": {
+                      "enum": [
+                        "HOME",
+                        "WORK",
+                        "MOBILE",
+                        "FAX",
+                        "OTHER"
+                      ]
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "phoneNumber": "2148675309",
+                    "phoneNumberType": "HOME"
+                  },
+                  {
+                    "phoneNumber": "4157672676",
+                    "phoneNumberType": "MOBILE"
+                  },
+                  {
+                    "phoneNumber": "5035551212",
+                    "phoneNumberType": "MOBILE"
+                  }
+                ]
+              },
+              "homeAddress": {
+                "description": "used for identity check. Also used for mailing if mailingAddress\nis not provided.\n",
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "streetAddress",
+                  "city",
+                  "country"
+                ],
+                "properties": {
+                  "country": {
+                    "format": "country-alpha-3",
+                    "type": "string",
+                    "example": "USA"
+                  },
+                  "streetAddress": {
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "description": "At most, 3 lines of streetAddress are available. For the custodian (2nd applicant) of\na CUSTODIAN account, only 2 lines are available.\n",
+                    "type": "array",
+                    "items": {
+                      "format": "ascii_printable",
+                      "type": "string",
+                      "maxLength": 30
+                    },
+                    "example": [
+                      "107 SE Washington St, Ste 256"
+                    ]
+                  },
+                  "city": {
+                    "format": "ascii_printable",
+                    "type": "string",
+                    "example": "Portland"
+                  },
+                  "postalCode": {
+                    "format": "ascii_printable",
+                    "description": "required for domestic and resident alien persons (domestic - person citizenshipCountry = USA and RA\n - citizenshipCountry != USA and addressCountry = USA)\n",
+                    "type": "string",
+                    "example": "97214"
+                  },
+                  "state": {
+                    "format": "ascii_printable",
+                    "description": "required for domestic and resident alien persons (domestic - person citizenshipCountry = USA and RA\n- citizenshipCountry != USA and addressCountry = USA)\n",
+                    "type": "string",
+                    "example": "OR"
+                  }
+                }
+              }
+            }
+          },
+          "disclosures": {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "isPoliticallyExposed",
+              "isControlPerson",
+              "isAffiliatedExchangeOrFINRA"
+            ],
+            "properties": {
+              "companySymbols": {
+                "description": "ticker symbols of publicly traded companies in which applicant is a control person. Required if\nisControlPerson is YES.\n",
+                "type": "array",
+                "items": {
+                  "format": "ascii_printable",
+                  "type": "string"
+                },
+                "example": [
+                  "AAPL",
+                  "GOOG"
+                ]
+              },
+              "isPoliticallyExposed": {
+                "enum": [
+                  "YES",
+                  "NO"
+                ],
+                "example": "YES"
+              },
+              "firmName": {
+                "format": "ascii_printable",
+                "description": "provide if and only if isAffiliatedExchangeOrFINRA is YES",
+                "type": "string"
+              },
+              "isControlPerson": {
+                "description": "Is the account holder a control person of a publicly traded company? (Director, Officer, or 10% Stock Owner)",
+                "enum": [
+                  "YES",
+                  "NO"
+                ]
+              },
+              "isAffiliatedExchangeOrFINRA": {
+                "description": "is the applicant affiliated with, or an employee of a member firm of a stock exchange or FINRA?\n",
+                "enum": [
+                  "YES",
+                  "NO"
+                ]
+              },
+              "affiliatedApproval": {
+                "description": "Array of uuids as reference ids of 3210 letter stored through SNAP service.\n",
+                "type": "array",
+                "items": {
+                  "format": "non_blank_string",
+                  "type": "string"
+                }
+              },
+              "politicalExposureDetail": {
+                "description": "provide if and only if isPoliticallyExposed is YES",
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "immediateFamily",
+                  "politicalOrganization"
+                ],
+                "properties": {
+                  "politicalOrganization": {
+                    "format": "ascii_printable",
+                    "description": "name of the related political organization",
+                    "type": "string",
+                    "example": "Democratic Party of Oregon"
+                  },
+                  "immediateFamily": {
+                    "description": "names of family members, including former spouses",
+                    "type": "array",
+                    "items": {
+                      "format": "ascii_printable",
+                      "type": "string"
+                    },
+                    "example": [
+                      "Fred Flintstone",
+                      "Wilma Flintstone",
+                      "Bam Bam Flintstone"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "employment": {
+            "minItems": 1,
+            "maxItems": 2,
+            "description": "employment information optional for the applicant",
+            "additionalProperties": false,
+            "type": "object",
+            "properties": {
+              "yearsEmployed": {
+                "type": "number",
+                "example": 1.5
+              },
+              "employer": {
+                "format": "ascii_printable",
+                "type": "string"
+              },
+              "positionEmployed": {
+                "format": "ascii_printable",
+                "type": "string",
+                "example": "Apex Clearing Corporation"
+              },
+              "employmentStatus": {
+                "enum": [
+                  "EMPLOYED",
+                  "RETIRED",
+                  "STUDENT",
+                  "UNEMPLOYED"
+                ]
+              },
+              "businessAddress": {
+                "description": "A physical address. May be a PO Box, Rural Route address, etc. City, state, and postalCode should be provided when possible, and are required when country is USA. For international addresses where they just don't make sense, they can be omitted.",
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "streetAddress",
+                  "city",
+                  "country"
+                ],
+                "properties": {
+                  "country": {
+                    "format": "country-alpha-3",
+                    "type": "string",
+                    "example": "USA"
+                  },
+                  "streetAddress": {
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "description": "At most, 3 lines of streetAddress are available. For the custodian (2nd applicant) of\na CUSTODIAN account, only 2 lines are available.\n",
+                    "type": "array",
+                    "items": {
+                      "format": "ascii_printable",
+                      "type": "string",
+                      "maxLength": 30
+                    },
+                    "example": [
+                      "107 SE Washington St, Ste 256"
+                    ]
+                  },
+                  "city": {
+                    "format": "ascii_printable",
+                    "type": "string",
+                    "example": "Portland"
+                  },
+                  "postalCode": {
+                    "format": "ascii_printable",
+                    "description": "required for domestic and resident alien persons (domestic - person citizenshipCountry = USA and RA\n - citizenshipCountry != USA and addressCountry = USA)\n",
+                    "type": "string",
+                    "example": "97214"
+                  },
+                  "state": {
+                    "format": "ascii_printable",
+                    "description": "required for domestic and resident alien persons (domestic - person citizenshipCountry = USA and RA\n- citizenshipCountry != USA and addressCountry = USA)\n",
+                    "type": "string",
+                    "example": "OR"
+                  }
+                }
+              }
+            }
+          },
+          "maritalStatus": {
+            "enum": [
+              "SINGLE",
+              "MARRIED",
+              "DIVORCED",
+              "WIDOWED"
+            ]
+          }
+        }
+      }
+    },
+    "registeredRepApprover": {
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "approverName"
+      ],
+      "properties": {
+        "approverName": {
+          "format": "ascii_printable",
+          "description": "provide the name of approver",
+          "type": "string"
+        }
+      }
+    },
+    "trustedContact": {
+      "description": "for personal account, explicitly provide the intent of either including or excluding possibly existing Trusted Contact\n",
+      "enum": [
+        "INCLUDE",
+        "EXCLUDE"
+      ]
+    },
+    "serviceProfile": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "sweepInstructions": {
+          "enum": [
+            "SWEEP",
+            "NO_SWEEP"
+          ]
+        },
+        "householdingService": {
+          "default": "NO",
+          "enum": [
+            "YES",
+            "NO"
+          ]
+        },
+        "dividendReinvestment": {
+          "default": "DO_NOT_REINVEST",
+          "enum": [
+            "REINVEST",
+            "DO_NOT_REINVEST"
+          ]
+        },
+        "dividendProceedsSendFrequency": {
+          "description": "required if dividendProceeds is SEND; ignored if dividendProceeds is HOLD",
+          "enum": [
+            "DAILY",
+            "WEEKLY",
+            "MONTHLY"
+          ]
+        },
+        "securitySaleProceeds": {
+          "description": "SEND cannot be selected if sweepInstructions = SWEEP",
+          "enum": [
+            "HOLD",
+            "SEND"
+          ]
+        },
+        "issuerDirectCommunication": {
+          "enum": [
+            "OBJECT",
+            "ACCEPT"
+          ]
+        },
+        "dividendProceeds": {
+          "enum": [
+            "HOLD",
+            "SEND"
+          ]
+        }
+      }
+    },
+    "principalApprover": {
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "approverName"
+      ],
+      "properties": {
+        "approverName": {
+          "format": "ascii_printable",
+          "description": "provide the name of approver",
+          "type": "string"
+        }
+      }
+    },
+    "investmentProfile": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "totalNetWorthUSD": {
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "min",
+            "max"
+          ],
+          "properties": {
+            "min": {
+              "type": "integer"
+            },
+            "max": {
+              "type": "integer"
+            }
+          },
+          "example": {
+            "min": 100001,
+            "max": 200000
+          }
+        },
+        "investmentExperience": {
+          "enum": [
+            "NONE",
+            "LIMITED",
+            "GOOD",
+            "EXTENSIVE"
+          ],
+          "example": "GOOD"
+        },
+        "riskTolerance": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ]
+        },
+        "investmentObjective": {
+          "enum": [
+            "GROWTH_INCOME",
+            "GROWTH",
+            "INCOME",
+            "CAPITAL_PRESERVATION",
+            "SPECULATION",
+            "MAXIMUM_GROWTH",
+            "BALANCED",
+            "OTHER"
+          ]
+        },
+        "annualIncomeUSD": {
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "min",
+            "max"
+          ],
+          "properties": {
+            "min": {
+              "type": "integer"
+            },
+            "max": {
+              "type": "integer"
+            }
+          },
+          "example": {
+            "min": 50001,
+            "max": 100000
+          }
+        },
+        "federalTaxBracketPercent": {
+          "type": "number",
+          "example": 39.6
+        },
+        "liquidNetWorthUSD": {
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "min",
+            "max"
+          ],
+          "properties": {
+            "min": {
+              "type": "integer"
+            },
+            "max": {
+              "type": "integer"
+            }
+          },
+          "example": {
+            "min": 100001,
+            "max": 200000
+          }
+        }
+      }
+    },
+    "applicantSignature": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "eSigned"
+          ],
+          "properties": {
+            "eSigned": {
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            }
+          }
+        },
+        {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "type": "object",
+              "required": [
+                "imageSource"
+              ],
+              "properties": {
+                "imageSource": {
+                  "enum": [
+                    "DOC_IMAGING"
+                  ]
+                }
+              }
+            },
+            {
+              "additionalProperties": false,
+              "type": "object",
+              "required": [
+                "imageSource",
+                "imageReference",
+                "photoIdReference"
+              ],
+              "properties": {
+                "imageSource": {
+                  "enum": [
+                    "SNAP"
+                  ]
+                },
+                "photoIdReference": {
+                  "format": "non_blank_string",
+                  "description": "uuid as reference id of photo ID image stored through SNAP service.\n",
+                  "type": "string"
+                },
+                "imageReference": {
+                  "format": "non_blank_string",
+                  "description": "uuid as reference id of signature image stored through SNAP service.\n",
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

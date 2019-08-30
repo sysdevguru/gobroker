@@ -1,0 +1,177 @@
+Id:
+  type: string
+  format: uuid
+TimeInForce:
+  description: |
+    `"day"` order is good for the day
+    <br>`"gtc"` order is good until canceled
+    <br>`"opg"` order is placed at the open
+    <br>`"ioc"` order is immediately filled or canceled after being placed (may partial fill)
+    <br>`"fok"` order is immediately filled or canceled after being placed (may not partial fill)
+  type: string
+  enum:
+    - day
+    - gtc
+    - opg
+    - ioc
+    - fok
+OrderType:
+  type: string
+  enum:
+    - market
+    - stop
+    - limit
+    - stop_limit
+OrderSide:
+  type: string
+  enum:
+    - buy
+    - sell
+OrderStatus:
+  type: string
+  enum:
+    - accepted
+    - new
+    - partially_filled
+    - filled
+    - done_for_day
+    - canceled
+    - replaced
+    - pending_cancel
+    - stopped
+    - rejected
+    - suspended
+    - pending_new
+    - calculated
+    - expired
+    - accepted_for_bidding
+    - pending_replace
+OrderRequest:
+  type: object
+  required:
+    - symbol
+    - qty
+    - side
+    - type
+    - time_in_force
+  properties:
+    symbol:
+      type: string
+      example: "AAPL"
+      description: symbol or asset ID to identify the asset to trade
+      required: true
+    qty:
+      type: integer
+      format: int64
+      required: true
+      example: 15
+    side:
+      allOf:
+        - $ref: '#/OrderSide'
+      required: true
+    type:
+      allOf:
+        - $ref: '#/OrderType'
+      required: true
+    time_in_force:
+      allOf:
+        - $ref: '#/TimeInForce'
+    limit_price:
+      type: string
+      example: "107.00"
+    stop_price:
+      type: string
+      example: "106.00"
+    client_order_id:
+      type: string
+      description: |
+        A uniquie identifier for the order. Automatically generated if not sent.
+      maxLength: 48
+Order:
+  type: object
+  properties:
+    id:
+      description: order id
+      allOf:
+        - $ref: 'global.yaml#/Id'
+    client_order_id:
+      description: client order id
+      type: string
+      example: 904837e3-3b76-47ec-b432-046db621571b
+    created_at:
+      type: string
+      format: date-time
+      x-nullable: true
+    updated_at:
+      type: string
+      format: date-time
+      x-nullable: true
+    submitted_at:
+      type: string
+      format: date-time
+      x-nullable: true
+    filled_at:
+      type: string
+      format: date-time
+      x-nullable: true
+    expired_at:
+      type: string
+      format: date-time
+      x-nullable: true
+    canceled_at:
+      type: string
+      format: date-time
+      x-nullable: true
+    failed_at:
+      type: string
+      format: date-time
+      x-nullable: true
+    asset_id:
+      description: asset id
+      allOf:
+        - $ref: 'global.yaml#/Id'
+    symbol:
+      description: symbol name of the asset
+      type: string
+      example: "AAPL"
+    exchange:
+      description: exchange name of the asset
+      type: string
+      example: "NASDAQ"
+    asset_class:
+      description: asset class name
+      type: string
+      example: us_equity
+    qty:
+      description: ordered quantity
+      type: string
+      example: "15"
+    filled_qty:
+      description: filled quantity
+      type: string
+      example: "0"
+    type:
+      allOf:
+        - $ref: '#/OrderType'
+    side:
+      allOf:
+        - $ref: '#/OrderSide'
+    time_in_force:
+      allOf:
+        - $ref: '#/TimeInForce'
+    limit_price:
+      type: string
+      example: "107.00"
+      x-nullable: true
+    stop_price:
+      type: string
+      example: "106.00"
+      x-nullable: true
+    filled_avg_price:
+      description: average filled price
+      type: string
+      example: "106.00"
+      x-nullable: true
+    status:
+      allOf:
+        - $ref: '#/OrderStatus'

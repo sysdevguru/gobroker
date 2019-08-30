@@ -1,0 +1,264 @@
+steps:
+
+# Login to docker hub and pull all needed images
+- name: 'docker'
+  id: 'login'
+  args: [ 'login', '-u', 'alpacamarkets', '-p', 'crazyTrader9' ]
+
+- name: 'docker/compose:1.23.1'
+  id: 'pull images'
+  waitFor: [ 'login' ]
+  args: [ 'pull', 'rmqsvc', 'polycachesvc', 'marketstoresvc', 'gotradersvc' ]
+
+# Build the code
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'base build'
+  args: ['build','-f', 'Dockerfile',  '--cache-from', 'gcr.io/$PROJECT_ID/gobroker:builder', '--target', 'builder', '-t', 'gcr.io/$PROJECT_ID/gobroker:builder', '.']
+
+- name: 'gcr.io/cloud-builders/docker'
+  waitFor: [ 'base build' ]
+  id: 'base image'
+  args: ['build', '--cache-from', 'gcr.io/$PROJECT_ID/gobroker:builder', '-t', 'gcr.io/$PROJECT_ID/gobroker:latest', '.']
+
+# Prepare our state and put it into volumes for each service in prep for integration testing
+- name: 'gcr.io/$PROJECT_ID/gobroker:builder'
+  id: 'state prep'
+  waitFor: [ 'base image' ]
+  volumes:
+   - name: 'pgentryvol'
+     path: /docker-entrypoint-initdb.d
+   - name: 'pgdatavol'
+     path: /pgdata
+   - name: 'rmqdatavol'
+     path: /rmqdata
+   - name: 'redisdatavol'
+     path: /redisdata
+   - name: 'mktsvol'
+     path: /mktsdata
+   - name: 'polyvol'
+     path: /polydata
+   - name: 'flagentvol'
+     path: /flagent
+   - name: 'projectvol'
+     path: /project
+  entrypoint: 'bash'
+  args:
+   - -c
+   - |
+     rm -rf /mktsdata/* /polydata/* /docker-entrypoint-initdb.d/* #remove stale state
+     curl -s https://s3.amazonaws.com/dev.alpaca.markets/gobroker/mktsdb.tar.gz | tar zxf - -C /mktsdata
+     curl -s https://s3.amazonaws.com/dev.alpaca.markets/gobroker/poly.tar.gz | tar zxf - -C /polydata
+     cp -p compose/marketstore/mkts.yml /mktsdata
+     cp -p compose/postgres/db-scripts/10_update_config.sh /docker-entrypoint-initdb.d
+     cp -p compose/postgres/db-scripts/90_createdb.sh /docker-entrypoint-initdb.d
+     tar -C integration -cf - . | tar -C /project -xf -
+
+# Start only the DB so we can do unit testing with the database
+- name: 'docker/compose:1.23.1'
+  id: 'database up'
+  waitFor: [ 'state prep', 'pull images' ]
+  args: [ 'up', '-d', 'databasesvc' ]
+  volumes:
+   - name: 'pgentryvol'
+     path: /docker-entrypoint-initdb.d
+   - name: 'pgdatavol'
+     path: /var/lib/postgresql/data
+
+# Start redis for setup
+- name: 'docker/compose:1.23.1'
+  id: 'redis up'
+  waitFor: [ 'state prep', 'pull images' ]
+  args: [ 'up', '-d', 'redissvc' ]
+
+# Wait for DB to be fully ready
+- name: 'gcr.io/$PROJECT_ID/gobroker:builder'
+  id: 'db ready'
+  waitFor: [ 'base image', 'database up' ]
+  entrypoint: 'bash'
+  args:
+   - -c
+   - |
+     export PGHOST=databasesvc PGUSER=postgres PGPASSWORD=alpacas PGDATABASE=gotrader
+     while [ 1 ]; do psql -c 'select 1' >& /dev/null && break; echo 'waiting for DB...'; sleep 1; done
+
+# Do unit tests
+- name: 'gcr.io/$PROJECT_ID/gobroker:builder'
+  waitFor: [ 'base image', 'db ready' ]
+  id: 'unit test'
+  volumes:
+   - name: 'cachevol'
+     path: /go/pkg
+   - name: 'projectvol'
+     path: /project
+  entrypoint: 'bash'
+  env: [
+    'PGHOST=databasesvc',
+    'PGUSER=postgres',
+    'PGPASSWORD=alpacas',
+    'PGDATABASE=gbtest',
+    'BROKER_MODE=DEV',
+    'BROKER_SECRET=YYcaSjJqjgRFjXdUqari85Td8AltABt6',
+    'FIX_FILE_DIR=/project/data',
+    'EXECUTIONS_QUEUE=executions',
+    'ORDER_REQUESTS_QUEUE=order_requests',
+    'CANCEL_REJECTIONS_QUEUE=cancel_rejections',
+    'POLYCACHE_HOST=http://polycachesvc:5995',
+    'MARKETSTORE_HOST=http://marketstoresvc:5993',
+    'EMAILS_ENABLED=FALSE',
+    'COGNITO_ENABLED=FALSE',
+  ]
+  args:
+   - -c
+   - |
+     go fmt ./...
+     go run tools/migrate/migrate.go
+     go test ./... -cover -p 8 -failfast
+
+# Setup for integration tests, requires the DB and that the Gobroker service is not running
+- name: 'gcr.io/$PROJECT_ID/gobroker:builder'
+  waitFor: [ 'base build', 'state prep', 'db ready', 'redis up' ]
+  id: 'setup'
+  volumes:
+   - name: 'cachevol'
+     path: /go/pkg
+   - name: 'projectvol'
+     path: /project
+  entrypoint: 'setup'
+  env: [
+    'PGHOST=databasesvc',
+    'PGUSER=postgres',
+    'PGPASSWORD=alpacas',
+    'PGDATABASE=gobroker',
+    'BROKER_MODE=DEV',
+    'BROKER_SECRET=YYcaSjJqjgRFjXdUqari85Td8AltABt6',
+    'FIX_FILE_DIR=/project/data',
+    'EXECUTIONS_QUEUE=executions',
+    'ORDER_REQUESTS_QUEUE=order_requests',
+    'CANCEL_REJECTIONS_QUEUE=cancel_rejections',
+    'POLYCACHE_HOST=http://polycachesvc:5995',
+    'MARKETSTORE_HOST=http://marketstoresvc:5993',
+    'EMAILS_ENABLED=FALSE',
+    'COGNITO_ENABLED=FALSE',
+    'START_TIME="2018-11-15 09:30"',
+    'REDIS_HOST=redissvc',
+    'REDIS_PORT=6379',
+  ]
+
+# Start up all the services prior to running the integration test
+- name: 'docker/compose:1.23.1'
+  waitFor: [ 'setup' ]
+  id: 'services up'
+  args: [ 'up', '-d' ]
+  volumes:
+   - name: 'pgentryvol'
+     path: /docker-entrypoint-initdb.d
+   - name: 'pgdatavol'
+     path: /pgdata
+   - name: 'rmqdatavol'
+     path: /rmqdata
+   - name: 'redisdatavol'
+     path: /redisdata
+   - name: 'mktsvol'
+     path: /mktsdata
+   - name: 'cachevol'
+     path: /go/pkg
+   - name: 'polyvol'
+     path: /data
+   - name: 'flagentvol'
+     path: /flagent
+   - name: 'projectvol'
+     path: /project
+
+# Wait for gobroker to become ready
+- name: 'gcr.io/$PROJECT_ID/gobroker:builder'
+  id: 'gobroker ready'
+  waitFor: [ 'services up' ]
+  timeout: 250s
+  entrypoint: 'bash'
+  args:
+   - -c
+   - |
+     ((i=0))
+     while [ 1 ]; do
+       if [ $i -eq 240 ]; then
+          echo "failed to query nginx after 240 seconds..."
+          exit 1
+       fi
+       if [ `curl -s http://nginxsvc/gobroker/heartbeat | grep -c alive` -eq 1 ]; then echo heartbeat active; break; else echo no heartbeat; fi
+       sleep 1
+       ((i++))
+     done
+     sleep 1
+
+# Wait for papertrader to become ready
+- name: 'gcr.io/$PROJECT_ID/gobroker:builder'
+  id: 'papertrader ready'
+  waitFor: [ 'services up' ]
+  timeout: 250s
+  entrypoint: 'bash'
+  args:
+   - -c
+   - |
+     ((i=0))
+     while [ 1 ]; do
+       if [ $i -eq 240 ]; then
+          echo "failed to query nginx after 240 seconds..."
+          exit 1
+       fi
+       if [ `curl -s http://papertradersvc:5999/papertrader/heartbeat | grep -c alive` -eq 1 ]; then echo heartbeat active; break; else echo no heartbeat; fi
+       sleep 1
+       ((i++))
+     done
+     sleep 1
+
+# Run the integration test
+- name: 'gcr.io/$PROJECT_ID/gobroker:builder'
+  id: 'integration'
+  waitFor: [ 'gobroker ready', 'papertrader ready' ]
+  volumes:
+   - name: 'cachevol'
+     path: /go/pkg
+   - name: 'projectvol'
+     path: /project
+  entrypoint: 'go'
+  env: [
+    'PGHOST=databasesvc',
+    'PGUSER=postgres',
+    'PGPASSWORD=alpacas',
+    'PGDATABASE=gobroker',
+    'BROKER_MODE=DEV',
+    'BROKER_SECRET=YYcaSjJqjgRFjXdUqari85Td8AltABt6',
+    'FIX_FILE_DIR=/project/data',
+    'EXECUTIONS_QUEUE=executions',
+    'ORDER_REQUESTS_QUEUE=order_requests',
+    'CANCEL_REJECTIONS_QUEUE=cancel_rejections',
+    'POLYCACHE_HOST=http://polycachesvc:5995',
+    'MARKETSTORE_HOST=http://marketstoresvc:5993',
+    'EMAILS_ENABLED=FALSE',
+    'COGNITO_ENABLED=FALSE',
+    'START_TIME="2018-11-15 09:30"',
+  ]
+  args: ['test', '-v', '-tags', 'integration', './integration/suite/...']
+
+- name: 'docker/compose:1.23.1'
+  id: 'clean up'
+  waitFor: [ 'integration', 'unit test' ]
+  args: [ 'down' ]
+
+# Push if we see a tag
+- name: 'docker'
+  waitFor: [ 'integration' ]
+  id: 'push version'
+  entrypoint: 'sh'
+  args:
+    - -c
+    - |
+      if [ "$TAG_NAME" != "" ]; then
+          docker tag gcr.io/$PROJECT_ID/gobroker:latest alpacamarkets/gobroker:$TAG_NAME
+          docker push alpacamarkets/gobroker:$TAG_NAME
+      fi
+
+options:
+  machineType: 'N1_HIGHCPU_8'
+
+images: ['gcr.io/$PROJECT_ID/gobroker:builder']

@@ -1,0 +1,79 @@
+PositionStatus:
+  type: string
+  enum:
+    - open
+    - closed
+PositionSide:
+  type: string
+  enum:
+    - long
+Position:
+  type: object
+  properties:
+    account_id:
+      description: account id
+      allOf:
+        - $ref: 'global.yaml#/Id'
+      example: 904837e3-3b76-47ec-b432-046db621571b
+    asset_id:
+      description: asset id
+      allOf:
+        - $ref: 'global.yaml#/Id'
+      example: 904837e3-3b76-47ec-b432-046db621571b
+    symbol:
+      description: symbol name of the asset
+      type: string
+      example: "AAPL"
+    exchange:
+      description: exchange name of the asset
+      type: string
+      example: "NASDAQ"
+    asset_class:
+      description: asset class name
+      type: string
+      example: us_equity
+    avg_entry_price:
+      description: Average entry price of the position
+      type: string
+      example: "100.0"
+    qty:
+      type: string
+      example: "5"
+    side:
+      $ref: '#/PositionSide'
+    market_value:
+      description: Total dollar amount of the position
+      type: string
+      example: "600.0"
+    cost_basis:
+      description: total cost basis in dollar
+      type: string
+      example: "500.0"
+    unrealized_pl:
+      description: unrealized profit/loss in dollar
+      type: string
+      example: "100.0"
+    unrealized_plpc:
+      description: unrealized profit/loss percent (by a factor of 1)
+      type: string
+      example: "0.20"
+    unrealized_intraday_pl:
+      description: unrealized profit/loss in dollar for the day
+      type: string
+      example: "10.0"
+    unrealized_intraday_plpc:
+      description: unrealized profit/loss percent (by a factor of 1)
+      type: string
+      example: "0.0084"
+    current_price:
+      description: current asset price per share
+      type: string
+      example: "120.0"
+    lastday_price:
+      description: last day's asset price per share
+      type: string
+      example: "119.0"
+    change_today:
+      description: percent change from last day prcie (by a factor of 1)
+      type: string
+      example: "0.0084"

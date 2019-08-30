@@ -1,0 +1,5 @@
+id,created_at,updated_at,class,exchange,symbol,symbol_old,cusip,cusip_old,status,tradable,shortable
+fbaa7510-3ea0-4f8e-83b5-d6f527129f48,2018-03-13 11:33:19.54695-05,2018-03-13 12:53:43.296189-05,us_equity,NASDAQ,AAPL,AAPL_OLD,aapl_cusip,aapl_cusip_old,active,true,true
+d7611c9f-6ca4-4869-853b-ac0b2f31db59,2018-03-13 11:33:28.088588-05,2018-03-13 12:53:53.695912-05,us_equity,NASDAQ,NVDA,NVDA_OLD,nvda_cusip,nvda_cusip_old,active,true,true
+3b11d285-ba92-45b3-a56a-523d7c89603f,2018-03-13 11:33:30.209936-05,2018-03-13 12:53:56.7219-05,us_equity,NYSEARCA,SPY,SPY_OLD,spy_cusip,spy_cusip_old,active,true,true
+7a37cf9d-1344-4739-8c77-1f8b127646c9,2018-03-13 11:33:31.354466-05,2018-03-13 12:53:57.891304-05,us_equity,NYSEARCA,UVXY,UVXY_OLD,uvxy_cusip,uvxy_cusip_old,active,true,true

@@ -1,0 +1,45 @@
+### Successful account create without additional info ###
+prefix: ""
+given_name: Name0
+additional_name: ""
+family_name: Family0
+suffix: ""
+legal_name: Name0 Family0
+date_of_birth: "1978-01-01"
+ssn: "666-00-0001"
+phone_number: "666-666-6666"
+street_address: 
+  - East 5th Street
+unit: null
+city: Manhattan
+state: NY
+postal_code: "10009"
+country_of_citizenship: USA
+permanent_resident: true
+visa_type: ""
+employment_status: "UNEMPLOYED"
+#employer: null
+#position: null
+#years_employed: null
+#tax_bracket:
+marital_status: "MARRIED"
+number_of_dependents: 0
+is_control_person: false
+#controlling_firms: null
+is_affiliated_exchange_or_finra: false
+#affiliated_firm: null
+is_politically_exposed: false
+#immediate_family_exposed: null
+#time_horizon: null
+#liquidity_needs: null
+#investment_objective: null
+#investment_experience: null
+#annual_income_min: null
+#annual_income_max: null
+#liquid_net_worth_min: null
+#liquid_net_worth_max: null
+#total_net_worth_min: null
+#total_net_worth_max: null
+#risk_tolerance: null
+margin_agreement_signed: true
+account_agreement_signed: true

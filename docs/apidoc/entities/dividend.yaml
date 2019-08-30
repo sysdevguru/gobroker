@@ -1,0 +1,32 @@
+Dividend:
+  type: object
+  properties:
+    id:
+      description: dividend id
+      allOf:
+        - $ref: 'global.yaml#/Id'
+    asset_id:
+      description: asset id
+      allOf:
+        - $ref: 'global.yaml#/Id'
+    account_id:
+      description: account id
+      allOf:
+        - $ref: 'global.yaml#/Id'
+    paid_at:
+      type: string
+      format: date
+      example: 2018-04-01T12:00:00.000000Z
+    payable_date:
+      type: string
+      format: date
+      example: '2018/04/01'
+    qty:
+      type: string
+      example: '4'
+    record_date:
+      type: string
+      example: '2018/03/01'
+    withholding:
+      type: string
+      example: '0.00'

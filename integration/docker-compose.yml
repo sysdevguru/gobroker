@@ -1,0 +1,230 @@
+version: "3.4"
+services:
+  databasesvc:
+    image: gcr.io/alpacahq/gbi.postgresql
+    build:
+      context: ../compose/postgres
+      dockerfile: Dockerfile
+    env_file:
+      - ../compose/env.core
+      - ../compose/env.postgres
+    ports:
+      - 5432:5432
+    user: 'postgres'
+    volumes:
+      - ../compose/postgres/db-scripts:/docker-entrypoint-initdb.d
+      - ../compose/postgres/pgdata:/var/lib/postgresql/data
+      - .:/project
+
+  pgmng:
+    image: sosedoff/pgweb
+    depends_on:
+      - databasesvc  
+    env_file:
+      - ../compose/env.pgweb
+    ports:
+      - 8081:8081
+
+  flagentsvc:
+    image: gcr.io/alpacahq/flagent
+    build:
+      context: ../compose/flagent
+      dockerfile: Dockerfile
+    volumes:
+      - ../compose/logs/fluentd:/var/log/fluentd
+    command: run
+      
+  rmqsvc:
+    image: rabbitmq:3.7.4-management-alpine
+    volumes:
+      - ../compose/rmqdata:/var/lib/rabbitmq/mnesia
+    env_file:
+      - ../compose/env.core
+      - ../compose/env.rmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  redissvc:
+    image: redis:alpine3.8
+
+  polycachesvc:
+    image: gcr.io/alpacahq/polycache:v1.6.5
+    volumes:
+      - ../compose/prjcdata:/project
+      - ../compose/cachedata:/data
+    environment:
+      TEST_MODE: "TRUE"
+      RAFT_DIR: /data/poly
+    env_file:
+      - ../compose/env.core
+
+  marketstoresetup:
+    image: gcr.io/alpacahq/gobroker:builder
+    volumes:
+      - ../compose/marketstore/mktsdb:/data/mktsdb
+    entrypoint:
+      - bash
+      - -c
+      - |
+       curl -s https://s3.amazonaws.com/dev.alpaca.markets/gobroker/mktsdb.tar.gz | tar zxf - -C /data
+
+  marketstoresvc:
+    image: alpacamarkets/marketstore:v3.0.1
+    depends_on:
+      - marketstoresetup
+    volumes:
+      - ../compose/marketstore:/data
+    env_file:
+      - ../compose/env.core
+    entrypoint:
+      - 'marketstore'
+      - 'start'
+      - '-c'
+      - '/data/mkts.yml'
+
+  gtsetup:
+    image: gcr.io/alpacahq/gotrader:v1.6.0
+    depends_on: 
+      - databasesvc
+      - rmqsvc
+    volumes:
+      - ../compose/cachedata:/go/pkg
+    environment:
+      PGHOST: databasesvc
+      SIMULATOR_DB: gotrader_sim
+    entrypoint:
+      - 'migrate'
+
+  gotradersvc:
+    image: gcr.io/alpacahq/gotrader:v1.6.0
+    depends_on: 
+      - databasesvc
+      - rmqsvc
+      - gtsetup
+    volumes:
+      - ../compose/prjdata:/project
+    env_file:
+      - ../compose/env.core
+      - ../compose/env.gotrader
+    restart: on-failure
+
+  gbsetup:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    depends_on: 
+      - databasesvc
+    volumes:
+      - ../compose/cachedata:/go/pkg
+    environment:
+      PGHOST: databasesvc
+      PGUSER: postgres
+      PGPASSWORD: alpacas
+      PGDATABASE: gobroker
+      BROKER_MODE: DEV
+      BROKER_SECRET: YYcaSjJqjgRFjXdUqari85Td8AltABt6
+      FIX_FILE_DIR: /project/data
+      EXECUTIONS_QUEUE: executions
+      ORDER_REQUESTS_QUEUE: order_requests
+      CANCEL_REJECTIONS_QUEUE: cancel_rejections
+      POLYCACHE_HOST: http://polycachesvc:5995
+      MARKETSTORE_HOST: http://marketstoresvc:5993
+      EMAILS_ENABLED: "FALSE"
+      COGNITO_ENABLED: "FALSE"
+      START_TIME: "2018-11-15 09:30"
+      REDIS_HOST: redissvc
+      REDIS_PORT: 6379
+    entrypoint:
+      - setup
+
+  gobrokersvc:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    depends_on: 
+      - databasesvc
+      - rmqsvc
+      - polycachesvc
+      - flagentsvc
+      - gbsetup
+    volumes:
+      # - ./compose/prjdata:/project
+      - ..:/go/src/github.com/alpacahq/gobroker
+      - ../compose/cachedata:/go/pkg
+    env_file:
+      - ../compose/env.core
+      - ../compose/env.gobroker
+
+  integrationtester:
+    image: gcr.io/alpacahq/gobroker:builder
+    depends_on: 
+      - databasesvc
+      - rmqsvc
+      - polycachesvc
+      - flagentsvc
+      - gbsetup
+      - gobrokersvc
+    volumes:
+      # - ./compose/prjdata:/project
+      - ..:/go/src/github.com/alpacahq/gobroker
+      - ../compose/cachedata:/go/pkg
+    environment:
+      PGHOST: databasesvc
+      PGDATABASE: gobroker
+    env_file:
+      - ../compose/env.core
+      - ../compose/env.gobroker
+    entrypoint:
+      - 'tail'
+      - '-f'
+      - '/dev/null'
+
+  gb-workerssvc:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    depends_on: 
+      - databasesvc
+      - rmqsvc
+      - gbsetup
+    volumes:
+      - ../compose/prjdata:/project
+      - ../compose/cachedata:/go/pkg
+    env_file:
+      - ../compose/env.core
+      - ../compose/env.gbworkers
+    entrypoint: workers
+  
+  ptsetup:
+    image: gcr.io/alpacahq/papertrader:builder
+    depends_on: 
+      - databasesvc
+    volumes:
+      - ../compose/cachedata:/go/pkg
+    environment:
+      PGHOST: databasesvc
+    entrypoint:
+      - migrate
+
+  papertradersvc:
+    image: gcr.io/alpacahq/papertrader:builder
+    depends_on: 
+      - databasesvc
+      - rmqsvc
+      - gbsetup
+      - flagentsvc
+    volumes:
+      - ../compose/prjdata:/project
+      - ../compose/cachedata:/go/pkg
+    env_file:
+      - ../compose/env.core
+      - ../compose/env.papertrader
+
+  nginxsvc:
+    image: gcr.io/alpacahq/nginx
+    depends_on:
+      - gobrokersvc
+    build:
+      context: ../compose/nginx
+      dockerfile: Dockerfile
